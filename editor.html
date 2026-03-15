@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GP Editor — Site Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #5A00AA;
+    --purple-dark: #360066;
+    --purple-mid: #7b2fbe;
+    --bg: #0a0a0a;
+    --surface: #111;
+    --border: #2a2a2a;
+    --border-accent: #360066;
+    --text: #ccc;
+    --text-dim: #666;
+    --green: #39ff14;
+    --red: #ff4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Space Mono', monospace; display: flex; height: 100vh; overflow: hidden; }
+
+  .sidebar { width: 220px; flex-shrink: 0; background: #000; border-right: 1px solid var(--border-accent); display: flex; flex-direction: column; }
+  .sidebar-logo { padding: 1.2rem 1rem 1rem; border-bottom: 1px solid var(--border-accent); }
+  .sidebar-logo h1 { font-family: 'VT323', monospace; font-size: 1.3rem; color: var(--purple); letter-spacing: 2px; line-height: 1.1; }
+  .sidebar-logo p { font-size: 0.55rem; color: var(--text-dim); letter-spacing: 2px; margin-top: 0.2rem; }
+  .nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1rem; cursor: pointer; font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); border-left: 2px solid transparent; transition: all 0.15s; border-bottom: 1px solid #0d0d0d; }
+  .nav-item:hover { color: var(--text); background: #0d0d0d; }
+  .nav-item.active { color: var(--purple); border-left-color: var(--purple); background: #0d0010; }
+  .nav-icon { font-size: 0.8rem; width: 16px; text-align: center; }
+  .sidebar-bottom { margin-top: auto; padding: 1rem; border-top: 1px solid var(--border-accent); }
+  .btn-save { width: 100%; padding: 0.65rem; background: var(--purple); color: #fff; border: none; cursor: pointer; font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; transition: background 0.2s; }
+  .btn-save:hover { background: var(--purple-mid); }
+  .btn-export { width: 100%; padding: 0.5rem; margin-top: 0.5rem; background: transparent; color: var(--purple); border: 1px solid var(--border-accent); cursor: pointer; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; transition: all 0.2s; }
+  .btn-export:hover { background: var(--border-accent); }
+  .save-status { font-size: 0.55rem; text-align: center; margin-top: 0.5rem; color: var(--text-dim); letter-spacing: 1px; height: 14px; }
+  .save-status.ok { color: var(--green); }
+  .save-status.err { color: var(--red); }
+
+  .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+  .topbar { background: #000; border-bottom: 1px solid var(--border); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
+  .topbar-title { font-family: 'VT323', monospace; font-size: 1.1rem; color: #fff; letter-spacing: 2px; }
+  .topbar-hint { font-size: 0.6rem; color: var(--text-dim); letter-spacing: 1px; font-family: 'Share Tech Mono', monospace; }
+  .panel { display: none; flex-direction: column; gap: 1.5rem; padding: 1.5rem; flex: 1; }
+  .panel.active { display: flex; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); padding: 1.25rem; border-radius: 4px; }
+  .card-title { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 3px; color: var(--purple); text-transform: uppercase; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-accent); }
+
+  .field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.85rem; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { font-family: 'Share Tech Mono', monospace; font-size: 0.55rem; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
+  .field input, .field textarea { background: #0a0a0a; border: 1px solid var(--border); color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; padding: 0.5rem 0.65rem; outline: none; transition: border-color 0.15s; resize: vertical; border-radius: 2px; }
+  .field input:focus, .field textarea:focus { border-color: var(--purple); }
+  .field textarea { min-height: 60px; }
+
+  .image-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .image-row { display: flex; align-items: center; gap: 0.5rem; background: #0a0a0a; border: 1px solid var(--border); padding: 0.4rem 0.6rem; border-radius: 2px; }
+  .image-row .img-thumb { width: 48px; height: 36px; object-fit: cover; border-radius: 2px; background: #1a1a1a; flex-shrink: 0; border: 1px solid var(--border); }
+  .image-row input { flex: 1; background: transparent; border: none; color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; outline: none; }
+  .image-row input::placeholder { color: #333; }
+  .btn-remove { background: none; border: none; color: #444; cursor: pointer; font-size: 1rem; line-height: 1; padding: 0 4px; transition: color 0.15s; }
+  .btn-remove:hover { color: var(--red); }
+  .btn-add-row { display: flex; align-items: center; gap: 0.5rem; background: none; border: 1px dashed var(--border); color: var(--text-dim); font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 2px; padding: 0.5rem 0.75rem; cursor: pointer; text-transform: uppercase; transition: all 0.15s; border-radius: 2px; width: 100%; }
+  .btn-add-row:hover { border-color: var(--purple); color: var(--purple); }
+
+  .file-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .file-row { background: #0a0a0a; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+  .file-row-header { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; cursor: pointer; font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--text); transition: background 0.15s; }
+  .file-row-header:hover { background: #111; }
+  .file-row-header .file-row-title { flex: 1; color: var(--purple); }
+  .file-row-header .file-row-toggle { color: var(--text-dim); font-size: 0.8rem; transition: transform 0.15s; }
+  .file-row.open .file-row-toggle { transform: rotate(90deg); }
+  .file-row-body { display: none; padding: 0.75rem; border-top: 1px solid var(--border); }
+  .file-row.open .file-row-body { display: block; }
+  .file-row-body .field { margin-bottom: 0.6rem; }
+  .file-row-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; justify-content: flex-end; }
+  .btn-del-file { background: none; border: 1px solid #330000; color: var(--red); font-family: 'Share Tech Mono', monospace; font-size: 0.55rem; letter-spacing: 1px; padding: 0.3rem 0.6rem; cursor: pointer; transition: background 0.15s; }
+  .btn-del-file:hover { background: #1a0000; }
+
+  .editor-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
+  .etab { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.5rem 1rem; background: none; border: none; cursor: pointer; color: var(--text-dim); border-bottom: 2px solid transparent; transition: all 0.15s; }
+  .etab.active { color: var(--purple); border-bottom-color: var(--purple); }
+  .etab-content { display: none; }
+  .etab-content.active { display: block; }
+
+  #panel-preview .preview-frame-wrap { border: 1px solid var(--border-accent); border-radius: 4px; overflow: hidden; height: calc(100vh - 200px); }
+  #panel-preview iframe { width: 100%; height: 100%; border: none; background: #000; }
+  .preview-bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+  .preview-bar span { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--text-dim); letter-spacing: 2px; }
+
+  .publish-step { display: flex; gap: 1rem; padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; }
+  .step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--purple-dark); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'VT323', monospace; font-size: 1rem; color: var(--purple); }
+  .step-body { flex: 1; }
+  .step-title { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; letter-spacing: 2px; color: #fff; margin-bottom: 0.35rem; }
+  .step-desc { font-size: 0.65rem; color: var(--text-dim); line-height: 1.7; font-family: 'Share Tech Mono', monospace; }
+  .step-desc a { color: var(--purple); text-decoration: none; }
+  .step-desc a:hover { text-decoration: underline; }
+  .step-desc code { background: #000; border: 1px solid var(--border); padding: 1px 5px; border-radius: 2px; font-size: 0.65rem; color: var(--green); }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #000; }
+  ::-webkit-scrollbar-thumb { background: var(--purple-dark); }
+  .badge { display: inline-block; font-size: 0.5rem; letter-spacing: 1px; padding: 2px 6px; font-family: 'Share Tech Mono', monospace; text-transform: uppercase; border-radius: 2px; }
+  .badge-purple { background: var(--purple-dark); color: var(--purple); }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>GP EDITOR</h1>
+    <p>SITE MANAGER v1.1</p>
+  </div>
+  <nav>
+    <div class="nav-item active" onclick="showPanel('hero')" id="nav-hero"><span class="nav-icon">◈</span> Hero</div>
+    <div class="nav-item" onclick="showPanel('about')" id="nav-about"><span class="nav-icon">◉</span> About</div>
+    <div class="nav-item" onclick="showPanel('projects')" id="nav-projects"><span class="nav-icon">◫</span> Projects</div>
+    <div class="nav-item" onclick="showPanel('contact')" id="nav-contact"><span class="nav-icon">◎</span> Contact</div>
+    <div class="nav-item" onclick="showPanel('preview')" id="nav-preview"><span class="nav-icon">▷</span> Preview</div>
+    <div class="nav-item" onclick="showPanel('publish')" id="nav-publish"><span class="nav-icon">↑</span> Publish</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <button class="btn-save" onclick="saveAll()">SAVE CHANGES</button>
+    <button class="btn-export" onclick="exportData()">EXPORT JSON BACKUP</button>
+    <div class="save-status" id="save-status"></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <span class="topbar-title" id="topbar-title">HERO SECTION</span>
+    <span class="topbar-hint">Changes save to browser — export JSON to back up</span>
+  </div>
+
+  <!-- HERO PANEL -->
+  <div class="panel active" id="panel-hero">
+    <div class="card">
+      <p class="card-title">Hero Text</p>
+      <div class="field"><label>Tag Line (small text above name)</label><input id="f-heroTag" type="text"></div>
+      <div class="field"><label>Subtitle (below name)</label><input id="f-heroSubtitle" type="text"></div>
+    </div>
+    <div class="card">
+      <p class="card-title">TV Wall Images <span class="badge badge-purple">Hero Grid</span></p>
+      <p style="font-size:0.6rem;color:#555;font-family:'Share Tech Mono',monospace;margin-bottom:1rem;line-height:1.7;">
+        Each entry = one monitor on the wall. Use relative paths like <code style="background:#000;padding:1px 4px;color:#39ff14;border:1px solid #222;">./img/Image00001.JPG</code> for local files.<br>
+        Images only show when the site is hosted (Netlify/GitHub Pages) — not when opened directly from your desktop.
+      </p>
+      <div class="image-list" id="hero-image-list"></div>
+      <button class="btn-add-row" onclick="addHeroImage()" style="margin-top:0.75rem;">+ Add Monitor Image</button>
+    </div>
+  </div>
+
+  <!-- ABOUT PANEL -->
+  <div class="panel" id="panel-about">
+    <div class="card">
+      <p class="card-title">Bio Paragraphs</p>
+      <p style="font-size:0.6rem;color:#555;font-family:'Share Tech Mono',monospace;margin-bottom:1rem;line-height:1.7;">
+        Plain text here — the site wraps key terms in purple automatically from the HTML. To edit bolding, update index.html directly.
+      </p>
+      <div class="field"><label>Paragraph 1</label><textarea id="f-bio1"></textarea></div>
+      <div class="field"><label>Paragraph 2</label><textarea id="f-bio2"></textarea></div>
+      <div class="field"><label>Paragraph 3</label><textarea id="f-bio3"></textarea></div>
+      <div class="field"><label>Paragraph 4</label><textarea id="f-bio4"></textarea></div>
+    </div>
+    <div class="card">
+      <p class="card-title">Skills Panel</p>
+      <div class="field"><label>Role</label><input id="f-skillRole" type="text"></div>
+      <div class="field"><label>Affiliation</label><input id="f-skillAffil" type="text"></div>
+      <div class="field"><label>Software</label><input id="f-skillTools" type="text"></div>
+      <div class="field"><label>Live Production</label><input id="f-skillLive" type="text"></div>
+      <div class="field"><label>Specialties</label><input id="f-skillSpec" type="text"></div>
+    </div>
+    <div class="card">
+      <p class="card-title">Resume PDF</p>
+      <p style="font-size:0.6rem;color:#555;font-family:'Share Tech Mono',monospace;margin-bottom:0.75rem;">Filename of your resume PDF — must be in the same folder as index.html.</p>
+      <div class="field"><label>PDF Filename</label><input id="f-resumeFile" type="text" placeholder="GrantHughesResume.pdf"></div>
+    </div>
+  </div>
+
+  <!-- PROJECTS PANEL -->
+  <div class="panel" id="panel-projects">
+    <div class="editor-tabs">
+      <button class="etab active" onclick="showEtab('video')">Video</button>
+      <button class="etab" onclick="showEtab('photo')">Photo</button>
+      <button class="etab" onclick="showEtab('broadcast')">Broadcast</button>
+    </div>
+    <div class="etab-content active" id="etab-video">
+      <div class="card">
+        <p class="card-title">Video Files</p>
+        <div class="file-list" id="filelist-video"></div>
+        <button class="btn-add-row" onclick="addFileCard('video')" style="margin-top:0.75rem;">+ Add Video Entry</button>
+      </div>
+    </div>
+    <div class="etab-content" id="etab-photo">
+      <div class="card">
+        <p class="card-title">Photo Files</p>
+        <div class="file-list" id="filelist-photo"></div>
+        <button class="btn-add-row" onclick="addFileCard('photo')" style="margin-top:0.75rem;">+ Add Photo Entry</button>
+      </div>
+    </div>
+    <div class="etab-content" id="etab-broadcast">
+      <div class="card">
+        <p class="card-title">Broadcast Files</p>
+        <div class="file-list" id="filelist-broadcast"></div>
+        <button class="btn-add-row" onclick="addFileCard('broadcast')" style="margin-top:0.75rem;">+ Add Broadcast Entry</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT PANEL -->
+  <div class="panel" id="panel-contact">
+    <div class="card">
+      <p class="card-title">Contact Info</p>
+      <div class="field"><label>Blurb Text</label><textarea id="f-contactBlurb"></textarea></div>
+      <div class="field"><label>Email Address</label><input id="f-contactEmail" type="email"></div>
+      <div class="field"><label>YouTube URL</label><input id="f-contactYoutube" type="url"></div>
+      <div class="field"><label>Instagram URL</label><input id="f-contactInstagram" type="url"></div>
+      <div class="field"><label>LinkedIn URL</label><input id="f-contactLinkedin" type="url"></div>
+    </div>
+  </div>
+
+  <!-- PREVIEW PANEL -->
+  <div class="panel" id="panel-preview">
+    <div class="preview-bar">
+      <span>LIVE PREVIEW</span>
+      <button class="btn-export" onclick="refreshPreview()" style="width:auto;padding:0.35rem 1rem;">↺ REFRESH</button>
+      <span style="color:#333;">Save first, then refresh</span>
+    </div>
+    <div class="preview-frame-wrap">
+      <iframe id="preview-iframe" src="index.html"></iframe>
+    </div>
+  </div>
+
+  <!-- PUBLISH PANEL -->
+  <div class="panel" id="panel-publish">
+    <div class="card">
+      <p class="card-title">Your File Structure</p>
+      <p style="font-size:0.65rem;color:#777;font-family:'Share Tech Mono',monospace;line-height:1.8;">
+        Make sure your folder looks like this before uploading to a host:
+      </p>
+      <p style="font-size:0.65rem;color:#555;font-family:'Share Tech Mono',monospace;line-height:2;margin-top:0.75rem;">
+        <code style="color:var(--green);">WebPubPortfolio/</code><br>
+        &nbsp;&nbsp;<code style="color:var(--green);">index.html</code><br>
+        &nbsp;&nbsp;<code style="color:var(--green);">editor.html</code> &nbsp;← keep this private / don't link it<br>
+        &nbsp;&nbsp;<code style="color:var(--green);">GrantHughesResume.pdf</code><br>
+        &nbsp;&nbsp;<code style="color:var(--green);">logo.png</code><br>
+        &nbsp;&nbsp;<code style="color:var(--green);">img/</code><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<code style="color:var(--green);">Image00001.JPG</code><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<code style="color:var(--green);">Image00002.JPG ...</code>
+      </p>
+    </div>
+
+    <div class="publish-step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p class="step-title">NETLIFY DROP — FASTEST</p>
+        <p class="step-desc">
+          1. Go to <a href="https://netlify.com/drop" target="_blank">netlify.com/drop</a><br>
+          2. Drag your entire <code>WebPubPortfolio</code> folder onto the page<br>
+          3. Live URL in ~30 seconds like <code>random-name.netlify.app</code><br>
+          4. Create a free account to lock in the URL and add a custom domain<br>
+          5. To update: just drag the folder again
+        </p>
+      </div>
+    </div>
+
+    <div class="publish-step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p class="step-title">GITHUB PAGES — FREE PERMANENT URL</p>
+        <p class="step-desc">
+          1. Create account at <a href="https://github.com" target="_blank">github.com</a><br>
+          2. New repo named <code>yourusername.github.io</code><br>
+          3. Upload all files<br>
+          4. Settings → Pages → Source: main branch → Save<br>
+          5. Live at <code>https://yourusername.github.io</code> in ~60 seconds
+        </p>
+      </div>
+    </div>
+
+    <div class="publish-step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p class="step-title">KEEPING DATA ON A NEW DEVICE</p>
+        <p class="step-desc">
+          Your edits live in this browser's localStorage.<br>
+          To move to a new machine: click <strong style="color:#ccc;">Export JSON Backup</strong> → save the file in your project folder → on the new device open editor.html and use the Import button below.
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="card-title">Import JSON Backup</p>
+      <p style="font-size:0.6rem;color:#555;font-family:'Share Tech Mono',monospace;margin-bottom:0.75rem;">Restore a previously exported backup.</p>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+      <button class="btn-add-row" onclick="document.getElementById('import-file').click()">↑ Import JSON Backup</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const STORAGE_KEY = 'gp_site_data';
+
+const defaultData = {
+  heroTag: '// broadcaster · content creator · photographer',
+  heroSubtitle: 'NORTHWEST MISSOURI STATE UNIVERSITY · KNWT · HIDDEN VARIABLES · DIGGING DEEPER',
+  contactBlurb: 'Broadcast production student seeking summer internship in media. Available for freelance video, photography, and broadcast work.',
+  contactEmail: 'grantedperspective@gmail.com',
+  contactYoutube: 'https://www.youtube.com/@grantedperspective',
+  contactInstagram: 'https://www.instagram.com/grantedperspective/',
+  contactLinkedin: 'https://www.linkedin.com/in/grant-hughes-media/',
+  skillRole: 'Camera Operator · Broadcast Producer · Video Editor · Photographer',
+  skillAffil: 'Catvision / NWMSU Athletics · KNWT Channel 8 · Northwest Missourian',
+  skillTools: 'Adobe Creative Cloud · DaVinci Resolve · OBS Studio · NewBlue · Blackmagic Design · TriCaster',
+  skillLive: 'Multi-camera directing · Live shot selection · Headset coordination · Scorebug integration · Lower thirds · Director timing',
+  skillSpec: 'Sports broadcast · Short-form edit · Motion graphics · Color grading · News packages',
+  resumeFile: 'GrantHughesResume.pdf',
+  bio1: "I'm Grant Hughes — a broadcast production student at Northwest Missouri State University balancing technical storytelling, live sports production, and independent content creation. Expected graduation Spring 2027.",
+  bio2: "At Catvision — NWMSU Athletics, I operate broadcast cameras for NCAA Division II football, basketball, soccer, volleyball, and baseball. I serve as the High Wide camera for Bearcat Football, delivering the primary field-wide program angle under live director instruction — including off-campus at Children's Mercy Soccer Stadium.",
+  bio3: "I produce Hidden Variables segments for KNWT TV — 3-minute technical pieces translating complex gaming systems into accessible visual narratives, managed from concept through final export in Adobe Creative Suite.",
+  bio4: "I also develop social media content for Digging Deeper to extend broadcast reach, and independently produce cinematic motorsport edits with precision pacing and advanced color grading. I've taken my camera everywhere — race tracks, coastlines, airport tarmacs, and everywhere in between.",
+  heroImages: [
+    './img/Image00001.JPG','./img/Image00002.JPG','./img/Image00003.JPG',
+    './img/Image00004.JPG','./img/Image00005.JPG','./img/Image00006.JPG',
+    './img/Image00007.JPG','./img/Image00008.JPG','./img/Image00009.JPG',
+    './img/Image00010.JPG','./img/Image00011.JPG','./img/Image00012.JPG',
+    './img/Image00013.JPG','./img/Image00015.JPG','./img/Image00016.JPG',
+    './img/Image00017.JPG','./img/Image00018.JPG','./img/Image00019.JPG',
+    './img/Image00020.JPG','./img/Image00021.JPG','./img/Image00022.JPG',
+    './img/Image00023.JPG','./img/Image00024.JPG','./img/Image00025.JPG'
+  ],
+  videoFiles: [
+    { title: 'HIDDEN VARIABLES EP.5', description: 'Frustum culling, LODs, occlusion — IN PRODUCTION', thumb: '', link: '' },
+    { title: 'HIDDEN VARIABLES EP.4', description: 'Why Battle Passes Feel Hard to Ignore', thumb: '', link: 'https://youtu.be/C0moU5GKMvo?si=aJQc3sJySB1CXiTO' },
+    { title: 'HIDDEN VARIABLES EP.3', description: "YouTube's Secret File on You", thumb: '', link: 'https://youtu.be/VM68CZKuAgI?si=DkQKeXkFl7G80CFn' },
+    { title: 'HIDDEN VARIABLES EP.2', description: 'How Speedrunners Break Games', thumb: '', link: 'https://youtu.be/nEr4Iz_sNq8?si=JAjzQRqd5GYCMCru' },
+    { title: 'HIDDEN VARIABLES EP.1', description: "End-to-End Latency & Peeker's Advantage", thumb: '', link: '#' },
+    { title: 'SLICE OF LIFE — MINI DOC', description: 'Dean Snepp — Owner of three similar Mercury Cougars', thumb: '', link: 'https://youtu.be/41iuG390s18?si=sVsbDnzQieertxcy' },
+    { title: 'PLAYBACK — SHORT FILM', description: '12 min · First short film · School project', thumb: '', link: 'https://youtu.be/LEAzeHEbfbM?si=dvI79buYHKGQbe3b' }
+  ],
+  photoFiles: [
+    { title: 'MOTORSPORT — TRACK & ROAD', description: 'Race cars, road cars, track days', thumb: '', link: '#' },
+    { title: 'MIAMI — JAN 2025', description: '193 items · Street & travel photography', thumb: '', link: '#' },
+    { title: 'COASTAL VIEWS', description: 'Maritime & waterfront photography', thumb: '', link: '#' },
+    { title: 'PLANE SPOTTING', description: 'Dec 2025 · Airport & tarmac', thumb: '', link: '#' },
+    { title: 'CAR SHOW', description: 'Show floor coverage', thumb: '', link: '#' },
+    { title: 'COFFEE BEAN — VARIOUS', description: 'Lifestyle & product photography', thumb: '', link: '#' }
+  ],
+  broadcastFiles: [
+    { title: 'CATVISION — BEARCAT FOOTBALL', description: 'High Wide angle · NCAA Div II · Main program angle', thumb: '', link: '#' },
+    { title: 'CATVISION — 2025 SEASON', description: 'Football, basketball, soccer, volleyball, baseball', thumb: '', link: '#' },
+    { title: 'NW VS PITT STATE — CMSS', description: "Off-campus · Children's Mercy Soccer Stadium · Graphics op", thumb: '', link: '#' },
+    { title: 'HIDDEN VARIABLES — KNWT PACKS', description: '3-min technical segments · Full production workflow', thumb: '', link: '#' },
+    { title: 'DIGGING DEEPER — SOCIAL', description: 'Short-form clips & social media content', thumb: '', link: '#' }
+  ]
+};
+
+let data = {};
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    data = saved ? { ...defaultData, ...JSON.parse(saved) } : { ...defaultData };
+  } catch(e) { data = { ...defaultData }; }
+}
+
+function populateFields() {
+  document.getElementById('f-heroTag').value = data.heroTag || '';
+  document.getElementById('f-heroSubtitle').value = data.heroSubtitle || '';
+  document.getElementById('f-bio1').value = (data.bio1 || '').replace(/<[^>]+>/g, '');
+  document.getElementById('f-bio2').value = (data.bio2 || '').replace(/<[^>]+>/g, '');
+  document.getElementById('f-bio3').value = (data.bio3 || '').replace(/<[^>]+>/g, '');
+  document.getElementById('f-bio4').value = (data.bio4 || '').replace(/<[^>]+>/g, '');
+  document.getElementById('f-skillRole').value = data.skillRole || '';
+  document.getElementById('f-skillAffil').value = data.skillAffil || '';
+  document.getElementById('f-skillTools').value = data.skillTools || '';
+  document.getElementById('f-skillLive').value = data.skillLive || '';
+  document.getElementById('f-skillSpec').value = data.skillSpec || '';
+  document.getElementById('f-resumeFile').value = data.resumeFile || 'GrantHughesResume.pdf';
+  document.getElementById('f-contactBlurb').value = data.contactBlurb || '';
+  document.getElementById('f-contactEmail').value = data.contactEmail || '';
+  document.getElementById('f-contactYoutube').value = data.contactYoutube || '';
+  document.getElementById('f-contactInstagram').value = data.contactInstagram || '';
+  document.getElementById('f-contactLinkedin').value = data.contactLinkedin || '';
+  buildHeroImageList();
+  buildFileList('video');
+  buildFileList('photo');
+  buildFileList('broadcast');
+}
+
+function buildHeroImageList() {
+  const list = document.getElementById('hero-image-list');
+  list.innerHTML = '';
+  (data.heroImages || []).forEach((src, i) => {
+    const row = document.createElement('div');
+    row.className = 'image-row';
+    row.innerHTML = `
+      <img class="img-thumb" src="${src}" onerror="this.style.background='#333'">
+      <input type="text" value="${src}" placeholder="./img/Image00001.JPG"
+        oninput="updateHeroImage(${i}, this.value); this.previousElementSibling.src=this.value;">
+      <button class="btn-remove" onclick="removeHeroImage(${i})" title="Remove">×</button>`;
+    list.appendChild(row);
+  });
+}
+
+function addHeroImage() {
+  data.heroImages.push('');
+  buildHeroImageList();
+  const inputs = document.querySelectorAll('#hero-image-list input');
+  if (inputs.length) inputs[inputs.length - 1].focus();
+}
+function updateHeroImage(i, val) { data.heroImages[i] = val; }
+function removeHeroImage(i) { data.heroImages.splice(i, 1); buildHeroImageList(); }
+
+function buildFileList(type) {
+  const list = document.getElementById(`filelist-${type}`);
+  list.innerHTML = '';
+  const files = data[`${type}Files`] || [];
+  files.forEach((f, i) => {
+    const row = document.createElement('div');
+    row.className = 'file-row';
+    row.id = `filerow-${type}-${i}`;
+    row.innerHTML = `
+      <div class="file-row-header" onclick="toggleFileRow('${type}', ${i})">
+        <span class="file-row-title">${f.title || '[ UNTITLED ]'}</span>
+        <span class="file-row-toggle">›</span>
+      </div>
+      <div class="file-row-body">
+        <div class="field"><label>Title</label>
+          <input type="text" value="${f.title || ''}" oninput="updateFile('${type}',${i},'title',this.value); document.querySelector('#filerow-${type}-${i} .file-row-title').textContent=this.value||'[ UNTITLED ]';">
+        </div>
+        <div class="field"><label>Description / Date</label>
+          <input type="text" value="${f.description || ''}" oninput="updateFile('${type}',${i},'description',this.value);">
+        </div>
+        <div class="field"><label>Thumbnail (./img/... or leave blank)</label>
+          <input type="text" value="${f.thumb || ''}" oninput="updateFile('${type}',${i},'thumb',this.value);">
+        </div>
+        <div class="field"><label>Link (YouTube URL, or # for none)</label>
+          <input type="text" value="${f.link || '#'}" oninput="updateFile('${type}',${i},'link',this.value);">
+        </div>
+        <div class="file-row-actions">
+          <button class="btn-del-file" onclick="removeFile('${type}',${i})">Delete Entry</button>
+        </div>
+      </div>`;
+    list.appendChild(row);
+  });
+}
+
+function toggleFileRow(type, i) {
+  document.getElementById(`filerow-${type}-${i}`).classList.toggle('open');
+}
+function updateFile(type, i, key, val) { data[`${type}Files`][i][key] = val; }
+function removeFile(type, i) { data[`${type}Files`].splice(i, 1); buildFileList(type); }
+function addFileCard(type) {
+  data[`${type}Files`].push({ title: '', description: '', thumb: '', link: '#' });
+  buildFileList(type);
+  const rows = document.querySelectorAll(`#filelist-${type} .file-row`);
+  if (rows.length) { const last = rows[rows.length - 1]; last.classList.add('open'); last.querySelector('input').focus(); }
+}
+
+function collectFields() {
+  data.heroTag = document.getElementById('f-heroTag').value;
+  data.heroSubtitle = document.getElementById('f-heroSubtitle').value;
+  data.bio1 = document.getElementById('f-bio1').value;
+  data.bio2 = document.getElementById('f-bio2').value;
+  data.bio3 = document.getElementById('f-bio3').value;
+  data.bio4 = document.getElementById('f-bio4').value;
+  data.skillRole = document.getElementById('f-skillRole').value;
+  data.skillAffil = document.getElementById('f-skillAffil').value;
+  data.skillTools = document.getElementById('f-skillTools').value;
+  data.skillLive = document.getElementById('f-skillLive').value;
+  data.skillSpec = document.getElementById('f-skillSpec').value;
+  data.resumeFile = document.getElementById('f-resumeFile').value;
+  data.contactBlurb = document.getElementById('f-contactBlurb').value;
+  data.contactEmail = document.getElementById('f-contactEmail').value;
+  data.contactYoutube = document.getElementById('f-contactYoutube').value;
+  data.contactInstagram = document.getElementById('f-contactInstagram').value;
+  data.contactLinkedin = document.getElementById('f-contactLinkedin').value;
+}
+
+function saveAll() {
+  collectFields();
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    const s = document.getElementById('save-status');
+    s.textContent = '✓ SAVED'; s.className = 'save-status ok';
+    setTimeout(() => { s.textContent = ''; s.className = 'save-status'; }, 2500);
+  } catch(e) {
+    const s = document.getElementById('save-status');
+    s.textContent = 'ERROR SAVING'; s.className = 'save-status err';
+  }
+}
+
+function exportData() {
+  collectFields();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'gp-site-backup.json';
+  a.click();
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      data = { ...defaultData, ...JSON.parse(ev.target.result) };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      populateFields();
+      const s = document.getElementById('save-status');
+      s.textContent = '✓ IMPORTED'; s.className = 'save-status ok';
+      setTimeout(() => { s.textContent = ''; s.className = 'save-status'; }, 2500);
+    } catch(err) { alert('Could not read backup file.'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+const panelTitles = { hero: 'HERO SECTION', about: 'ABOUT & BIO', projects: 'PROJECTS', contact: 'CONTACT', preview: 'LIVE PREVIEW', publish: 'PUBLISH GUIDE' };
+
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`panel-${name}`).classList.add('active');
+  document.getElementById(`nav-${name}`).classList.add('active');
+  document.getElementById('topbar-title').textContent = panelTitles[name] || name.toUpperCase();
+}
+
+function showEtab(name) {
+  document.querySelectorAll('.etab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.etab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.etab[onclick="showEtab('${name}')"]`).classList.add('active');
+  document.getElementById(`etab-${name}`).classList.add('active');
+}
+
+function refreshPreview() {
+  saveAll();
+  document.getElementById('preview-iframe').src = 'index.html?' + Date.now();
+}
+
+loadData();
+populateFields();
+</script>
+</body>
+</html>
