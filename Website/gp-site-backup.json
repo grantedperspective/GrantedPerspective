@@ -1,0 +1,147 @@
+{
+  "heroTag": "// broadcaster · content creator · photographer",
+  "heroSubtitle": "NORTHWEST MISSOURI STATE UNIVERSITY · KNWT · HIDDEN VARIABLES · DIGGING DEEPER",
+  "contactBlurb": "Broadcast production student seeking summer internship in media. Available for freelance video, photography, and broadcast work.",
+  "contactEmail": "grantedperspective@gmail.com",
+  "contactYoutube": "https://www.youtube.com/@grantedperspective",
+  "contactInstagram": "https://www.instagram.com/grantedperspective/",
+  "contactLinkedin": "https://www.linkedin.com/in/grant-hughes-media/",
+  "skillRole": "Camera Operator · Broadcast Producer · Video Editor · Photographer",
+  "skillAffil": "Catvision / NWMSU Athletics · KNWT TV · NWMSU",
+  "skillTools": "Adobe Creative Cloud · DaVinci Resolve · OBS Studio · NewBlue · Blackmagic Design · TriCaster",
+  "skillLive": "Multi-camera directing · Live shot selection · Headset coordination · Scorebug integration · Lower thirds · Director timing",
+  "skillSpec": "Sports broadcast · Short-form edit · Motion graphics · Color grading · Tech news packages",
+  "resumeFile": "GrantHughesResume.pdf",
+  "bio1": "I'm Grant Hughes — a broadcast production student at Northwest Missouri State University balancing technical storytelling, live sports production, and independent content creation. Expected graduation Spring 2027.",
+  "bio2": "At Catvision — NWMSU Athletics, I operate broadcast cameras for NCAA Division II football, basketball, soccer, volleyball, and baseball. I serve as the High Wide camera for Bearcat Football, delivering the primary field-wide program angle under live director instruction — including off-campus at Children's Mercy Soccer Stadium.",
+  "bio3": "I produce Hidden Variables segments for KNWT TV — 3-minute technical pieces translating complex gaming systems into accessible visual narratives, managed from concept through final export in Adobe Creative Suite.",
+  "bio4": "I also develop social media content for Digging Deeper to extend broadcast reach, and independently produce cinematic motorsport edits with precision pacing and advanced color grading. I've taken my camera everywhere — race tracks, coastlines, airport tarmacs, and everywhere in between.",
+  "heroImages": [
+    "./img/Image00001.JPG",
+    "./img/Image00002.JPG",
+    "./img/Image00003.JPG",
+    "./img/Image00004.JPG",
+    "./img/Image00005.JPG",
+    "./img/Image00006.JPG",
+    "./img/Image00007.JPG",
+    "./img/Image00008.JPG",
+    "./img/Image00009.JPG",
+    "./img/Image00010.JPG",
+    "./img/Image00011.JPG",
+    "./img/Image00012.JPG",
+    "./img/Image00013.JPG",
+    "./img/Image00015.JPG",
+    "./img/Image00016.JPG",
+    "./img/Image00017.JPG",
+    "./img/Image00018.JPG",
+    "./img/Image00019.JPG",
+    "./img/Image00020.JPG",
+    "./img/Image00021.JPG",
+    "./img/Image00022.JPG",
+    "./img/Image00023.JPG",
+    "./img/Image00024.JPG",
+    "./img/Image00025.JPG"
+  ],
+  "videoFiles": [
+    {
+      "title": "HIDDEN VARIABLES EP.5",
+      "description": "Frustum culling, LODs, occlusion — IN PRODUCTION",
+      "thumb": "",
+      "link": ""
+    },
+    {
+      "title": "HIDDEN VARIABLES EP.4",
+      "description": "Why Battle Passes Feel Hard to Ignore",
+      "thumb": "",
+      "link": "https://youtu.be/C0moU5GKMvo?si=aJQc3sJySB1CXiTO"
+    },
+    {
+      "title": "HIDDEN VARIABLES EP.3",
+      "description": "YouTube's Secret File on You",
+      "thumb": "",
+      "link": "https://youtu.be/VM68CZKuAgI?si=DkQKeXkFl7G80CFn"
+    },
+    {
+      "title": "HIDDEN VARIABLES EP.2",
+      "description": "How Speedrunners Break Games",
+      "thumb": "",
+      "link": "https://youtu.be/nEr4Iz_sNq8?si=JAjzQRqd5GYCMCru"
+    },
+    {
+      "title": "HIDDEN VARIABLES EP.1",
+      "description": "End-to-End Latency & Peeker's Advantage",
+      "thumb": "",
+      "link": "#"
+    },
+    {
+      "title": "SLICE OF LIFE — MINI DOC",
+      "description": "Dean Snepp — Owner of three similar Mercury Cougars",
+      "thumb": "",
+      "link": "https://youtu.be/41iuG390s18?si=sVsbDnzQieertxcy"
+    },
+    {
+      "title": "PLAYBACK — SHORT FILM",
+      "description": "12 min · First short film · School project",
+      "thumb": "",
+      "link": "https://youtu.be/LEAzeHEbfbM?si=dvI79buYHKGQbe3b"
+    }
+  ],
+  "photoFiles": [
+    {
+      "title": "MOTORSPORT — TRACK & ROAD",
+      "description": "Race cars, road cars, track days",
+      "thumb": "",
+      "link": "#"
+    },
+    {
+      "title": "MIAMI — JAN 2025",
+      "description": "193 items · Street & travel photography",
+      "thumb": "",
+      "link": "#"
+    },
+    {
+      "title": "COASTAL VIEWS",
+      "description": "Maritime & waterfront photography",
+      "thumb": "",
+      "link": "#"
+    },
+    {
+      "title": "PLANE SPOTTING",
+      "description": "Dec 2025 · Airport & tarmac",
+      "thumb": "",
+      "link": "#"
+    },
+    {
+      "title": "CAR SHOW",
+      "description": "Show floor coverage",
+      "thumb": "",
+      "link": "#"
+    },
+    {
+      "title": "COFFEE BEAN — VARIOUS",
+      "description": "Lifestyle & product photography",
+      "thumb": "",
+      "link": "#"
+    }
+  ],
+  "broadcastFiles": [
+    {
+      "title": "CATVISION — BEARCAT FOOTBALL",
+      "description": "High Wide angle · NCAA Div II · Main program angle",
+      "thumb": "",
+      "link": "#"
+    },
+    {
+      "title": "CATVISION — 2025 SEASON",
+      "description": "Football, basketball, soccer, volleyball, baseball",
+      "thumb": "",
+      "link": "#"
+    },
+    {
+      "title": "NW VS PITT STATE — CMSS",
+      "description": "Off-campus · Children's Mercy Soccer Stadium · Graphics op",
+      "thumb": "",
+      "link": "#"
+    }
+  ]
+}
