@@ -19,55 +19,161 @@
   html { scroll-behavior: smooth; }
   body { background: #000; color: var(--grey); font-family: 'Space Mono', monospace; overflow-x: hidden; }
 
+  /* HALFTONE BG TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(90,0,170,0.18) 1px, transparent 1px);
+    background-size: 18px 18px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
   /* NAV */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-    background: rgba(0,0,0,0.92);
+    background: rgba(0,0,0,0.95);
     border-bottom: 1px solid var(--purple-dark);
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 2rem; height: 56px;
     backdrop-filter: blur(8px);
   }
-  .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+  .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; cursor: pointer; }
   .nav-logo-img { height: 34px; width: auto; object-fit: contain; display: block; }
   .nav-logo-text { font-family: 'VT323', monospace; font-size: 1.4rem; color: var(--purple); letter-spacing: 2px; }
   .nav-logo-text span { color: var(--grey); }
   .nav-links { display: flex; gap: 2rem; list-style: none; }
-  .nav-links a { color: var(--grey); text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; transition: color 0.2s; }
+  .nav-links a {
+    color: var(--grey); text-decoration: none; font-size: 0.7rem;
+    letter-spacing: 2px; text-transform: uppercase;
+    font-family: 'Share Tech Mono', monospace; transition: color 0.2s;
+    cursor: pointer; background: none; border: none; padding: 0;
+  }
   .nav-links a:hover { color: var(--purple); }
+  .nav-links a.active { color: var(--purple); border-bottom: 1px solid var(--purple); padding-bottom: 2px; }
 
-  /* HERO */
-  #hero { padding: 56px 0 0; position: relative; background: #000; overflow: hidden; min-height: 100vh; }
-  .tv-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px; width: 100%; }
-  .tv-unit { position: relative; aspect-ratio: 4/3; background: var(--bezel); border-radius: 12px; border: 3px solid var(--bezel-edge); box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 4px 12px rgba(0,0,0,0.9); overflow: hidden; }
+  /* MOSAIC TRANSITION CANVAS */
+  #mosaic-canvas {
+    position: fixed; inset: 0; z-index: 900;
+    pointer-events: none; opacity: 0;
+  }
+
+  /* PAGES */
+  .page { display: none; position: relative; z-index: 1; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ===================== HOME PAGE ===================== */
+  #page-home { padding: 56px 0 0; background: #000; overflow: hidden; min-height: 100vh; }
+  .tv-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 10px; padding: 10px; width: 100%;
+  }
+  .tv-unit {
+    position: relative; aspect-ratio: 4/3; background: var(--bezel);
+    border-radius: 12px; border: 3px solid var(--bezel-edge);
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 4px 12px rgba(0,0,0,0.9);
+    overflow: hidden;
+  }
   .tv-screen { position: absolute; inset: 6px; border-radius: 8px; background: #000; overflow: hidden; z-index: 2; }
   .tv-screen img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 6px; opacity: 0; transition: opacity 0.1s; }
   .tv-unit.on .tv-screen img { opacity: 1; }
   .tv-canvas { position: absolute; inset: 0; border-radius: 6px; z-index: 4; opacity: 0; pointer-events: none; }
-  .tv-scanlines { position: absolute; inset: 0; border-radius: 6px; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px); z-index: 5; pointer-events: none; }
-  .tv-glare { position: absolute; inset: 6px; border-radius: 8px; background: radial-gradient(ellipse at 20% 15%, rgba(255,255,255,0.06) 0%, transparent 60%); z-index: 6; pointer-events: none; }
-  .tv-power-dot { position: absolute; bottom: 3px; right: 8px; width: 4px; height: 4px; border-radius: 50%; background: #222; z-index: 10; transition: background 0.2s; }
+  .tv-scanlines {
+    position: absolute; inset: 0; border-radius: 6px;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
+    z-index: 5; pointer-events: none;
+  }
+  .tv-glare {
+    position: absolute; inset: 6px; border-radius: 8px;
+    background: radial-gradient(ellipse at 20% 15%, rgba(255,255,255,0.06) 0%, transparent 60%);
+    z-index: 6; pointer-events: none;
+  }
+  .tv-power-dot {
+    position: absolute; bottom: 3px; right: 8px; width: 4px; height: 4px;
+    border-radius: 50%; background: #222; z-index: 10; transition: background 0.2s;
+  }
   .tv-unit.on .tv-power-dot { background: var(--crt-green); box-shadow: 0 0 4px var(--crt-green); }
-  .hero-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9) 40%, #000 100%); padding: 6rem 3rem 3rem; z-index: 20; pointer-events: none; }
-  .hero-tag { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 4px; color: var(--purple); text-transform: uppercase; margin-bottom: 0.5rem; }
-  .hero-name { font-family: 'VT323', monospace; font-size: clamp(3rem, 8vw, 7rem); color: #fff; line-height: 0.9; letter-spacing: 2px; }
+
+  .hero-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9) 40%, #000 100%);
+    padding: 6rem 3rem 3rem; z-index: 20; pointer-events: none;
+  }
+  .hero-tag {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 4px; color: var(--purple); text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+
+  /* HALFTONE HEADLINE */
+  .hero-name {
+    font-family: 'VT323', monospace; font-size: clamp(3rem, 8vw, 7rem);
+    color: #fff; line-height: 0.9; letter-spacing: 2px;
+    position: relative; display: inline-block;
+  }
   .hero-name span { color: var(--purple); }
-  .hero-subtitle { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--grey); letter-spacing: 3px; margin-top: 0.75rem; opacity: 0.7; }
+  .hero-name::after {
+    content: attr(data-text);
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(90,0,170,0.55) 1.2px, transparent 1.2px);
+    background-size: 6px 6px;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  .hero-subtitle {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.75rem;
+    color: var(--grey); letter-spacing: 3px; margin-top: 0.75rem; opacity: 0.7;
+  }
   .hero-scroll { margin-top: 1.5rem; pointer-events: all; }
-  .hero-scroll a { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 3px; color: var(--purple); text-decoration: none; text-transform: uppercase; border: 1px solid var(--purple-dark); padding: 0.5rem 1.2rem; display: inline-block; transition: background 0.2s, color 0.2s; }
+  .hero-scroll a {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 3px; color: var(--purple); text-decoration: none;
+    text-transform: uppercase; border: 1px solid var(--purple-dark);
+    padding: 0.5rem 1.2rem; display: inline-block;
+    transition: background 0.2s, color 0.2s; cursor: pointer;
+  }
   .hero-scroll a:hover { background: var(--purple-dark); color: #fff; }
 
-  /* SECTIONS */
-  section { min-height: 100vh; padding: 80px 2rem 4rem; }
-  .section-header { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 4px; color: var(--purple); text-transform: uppercase; margin-bottom: 0.5rem; }
-  .section-title { font-family: 'Oswald', sans-serif; font-size: clamp(2rem, 5vw, 4rem); font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 2rem; border-bottom: 2px solid var(--purple); padding-bottom: 0.5rem; display: inline-block; }
+  /* ===================== INNER PAGES ===================== */
+  .inner-page { padding: 100px 2rem 4rem; min-height: 100vh; position: relative; z-index: 1; }
 
-  /* ABOUT */
-  #about { background: #000; border-top: 1px solid var(--purple-dark); }
+  .section-header {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 4px; color: var(--purple); text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+
+  /* HALFTONE SECTION TITLE */
+  .section-title {
+    font-family: 'Oswald', sans-serif; font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 2rem; padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--purple); display: inline-block;
+    position: relative;
+  }
+  .section-title::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(90,0,170,0.4) 1px, transparent 1px);
+    background-size: 5px 5px;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  /* ===================== ABOUT PAGE ===================== */
+  #page-about { background: #000; border-top: 1px solid var(--purple-dark); }
   .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 1100px; }
   .about-bio p { font-size: 0.85rem; line-height: 1.9; color: #bbb; margin-bottom: 1rem; font-family: 'Share Tech Mono', monospace; }
   .about-bio p strong { color: var(--purple); font-weight: 400; }
-  .resume-btn { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.5rem; padding: 0.75rem 1.5rem; background: var(--purple); color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s; }
+  .resume-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem; background: var(--purple); color: #fff;
+    font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; letter-spacing: 2px;
+    text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s;
+  }
   .resume-btn:hover { background: var(--purple-dark); }
   .resume-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
   .about-skills { display: flex; flex-direction: column; gap: 1rem; }
@@ -75,16 +181,20 @@
   .skill-label { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 3px; color: var(--purple); text-transform: uppercase; margin-bottom: 0.3rem; }
   .skill-value { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: #ccc; line-height: 1.6; }
 
-  /* PROJECTS */
-  #projects { background: #050505; border-top: 1px solid var(--purple-dark); }
+  /* ===================== PROJECTS PAGE ===================== */
+  #page-projects { background: #050505; }
   .fallout-terminal { background: #000; border: 1px solid var(--purple-dark); max-width: 1100px; }
   .terminal-bar { background: var(--purple-dark); padding: 0.4rem 1rem; display: flex; align-items: center; gap: 0.5rem; }
   .terminal-bar span { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 3px; color: #ccc; text-transform: uppercase; }
   .terminal-dot { width: 8px; height: 8px; border-radius: 50%; }
   .terminal-inner { padding: 2rem; font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--purple); }
   .terminal-prompt { color: #666; margin-bottom: 0.3rem; }
-  .terminal-tabs { display: flex; gap: 0; margin: 1.5rem 0 0; border-bottom: 1px solid var(--purple-dark); }
-  .tab-btn { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.6rem 1.5rem; background: none; border: none; cursor: pointer; color: #555; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .terminal-tabs { display: flex; gap: 0; margin: 1.5rem 0 0; border-bottom: 1px solid var(--purple-dark); flex-wrap: wrap; }
+  .tab-btn {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 2px;
+    text-transform: uppercase; padding: 0.6rem 1.5rem; background: none; border: none;
+    cursor: pointer; color: #555; border-bottom: 2px solid transparent; transition: all 0.2s;
+  }
   .tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); }
   .tab-btn:hover { color: #999; }
   .tab-content { display: none; padding-top: 1.5rem; }
@@ -104,8 +214,8 @@
   .file-tag.photo { background: #360066; color: var(--purple); }
   .file-tag.video { background: #1a0033; color: #9b59b6; }
   .file-tag.broadcast { background: #0a0020; color: #7a4ab8; }
+  .file-tag.pitch { background: #002200; color: #39ff14; }
 
-  /* PLACEHOLDER OVERLAY */
   .file-overlay { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.88); z-index: 20; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; text-align: center; }
   .file-overlay.visible { display: flex; }
   .file-overlay-title { font-family: 'VT323', monospace; font-size: 1.4rem; color: var(--purple); letter-spacing: 2px; margin-bottom: 0.4rem; }
@@ -113,8 +223,8 @@
   .file-overlay-close { margin-top: 0.75rem; font-family: 'Share Tech Mono', monospace; font-size: 0.55rem; color: #444; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; border: 1px solid #333; padding: 3px 10px; transition: color 0.2s, border-color 0.2s; }
   .file-overlay-close:hover { color: var(--purple); border-color: var(--purple); }
 
-  /* CONTACT */
-  #contact { background: #000; border-top: 1px solid var(--purple-dark); }
+  /* ===================== CONTACT PAGE ===================== */
+  #page-contact { background: #000; border-top: 1px solid var(--purple-dark); }
   .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 900px; }
   .contact-blurb { font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: #777; line-height: 1.9; margin-bottom: 2rem; }
   .contact-links { display: flex; flex-direction: column; gap: 0.75rem; }
@@ -134,8 +244,9 @@
   .form-status.success { color: var(--crt-green); display: block; }
   .form-status.error { color: #ff4444; display: block; }
 
-  footer { border-top: 1px solid var(--purple-dark); padding: 2rem; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: #333; letter-spacing: 2px; }
+  footer { border-top: 1px solid var(--purple-dark); padding: 2rem; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: #333; letter-spacing: 2px; position: relative; z-index: 1; }
   footer span { color: var(--purple); }
+
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: #000; }
   ::-webkit-scrollbar-thumb { background: var(--purple-dark); }
@@ -145,138 +256,151 @@
     .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
     nav { padding: 0 1rem; }
     .nav-links { gap: 1rem; }
+    .terminal-tabs { flex-wrap: wrap; }
   }
 </style>
 </head>
 <body>
 
+<!-- MOSAIC TRANSITION CANVAS -->
+<canvas id="mosaic-canvas"></canvas>
+
 <nav>
-  <a class="nav-logo" href="#hero">
+  <a class="nav-logo" onclick="navigateTo('home')">
     <img class="nav-logo-img" src="./logo.png" alt="GrantedPerspective"
       onerror="this.style.display='none'; document.getElementById('nav-logo-fallback').style.display='flex';">
     <span class="nav-logo-text" id="nav-logo-fallback" style="display:none;">GRANTED<span>PERSPECTIVE</span></span>
   </a>
   <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a onclick="navigateTo('about')" data-page="about">About</a></li>
+    <li><a onclick="navigateTo('projects')" data-page="projects">Projects</a></li>
+    <li><a onclick="navigateTo('contact')" data-page="contact">Contact</a></li>
   </ul>
 </nav>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="tv-grid" id="tvGrid"></div>
-  <div class="hero-overlay">
-    <p class="hero-tag" id="hero-tag">// broadcaster · content creator · photographer</p>
-    <h1 class="hero-name" id="hero-name">GRANT<br><span>HUGHES</span></h1>
-    <p class="hero-subtitle" id="hero-subtitle">NORTHWEST MISSOURI STATE UNIVERSITY · KNWT · HIDDEN VARIABLES · DIGGING DEEPER</p>
-    <div class="hero-scroll"><a href="#about">ENTER ›</a></div>
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div style="position:relative; min-height:100vh;">
+    <div class="tv-grid" id="tvGrid"></div>
+    <div class="hero-overlay">
+      <p class="hero-tag" id="hero-tag">// broadcaster · content creator · photographer</p>
+      <h1 class="hero-name" id="hero-name" data-text="GRANT HUGHES">GRANT<br><span>HUGHES</span></h1>
+      <p class="hero-subtitle" id="hero-subtitle">NORTHWEST MISSOURI STATE UNIVERSITY · KNWT · HIDDEN VARIABLES · DIGGING DEEPER</p>
+      <div class="hero-scroll"><a onclick="navigateTo('projects')">ENTER ›</a></div>
+    </div>
   </div>
-</section>
+</div>
 
-<!-- ABOUT -->
-<section id="about">
-  <p class="section-header">// 01 — ABOUT</p>
-  <h2 class="section-title">WHO I AM</h2>
-  <div class="about-grid">
-    <div class="about-bio" id="about-bio-text">
-      <p>I'm <strong>Grant Hughes</strong> — a broadcast production student at Northwest Missouri State University balancing technical storytelling, live sports production, and independent content creation. Expected graduation Spring 2027.</p>
-      <p>At <strong>Catvision — NWMSU Athletics</strong>, I operate broadcast cameras for NCAA Division II football, basketball, soccer, volleyball, and baseball. I serve as the <strong>High Wide camera for Bearcat Football</strong>, delivering the primary field-wide program angle under live director instruction — including off-campus at Children's Mercy Soccer Stadium.</p>
-      <p>I produce <strong>Hidden Variables</strong> segments for KNWT TV — 3-minute technical pieces translating complex gaming systems into accessible visual narratives, managed from concept through final export in Adobe Creative Suite.</p>
-      <p>I also develop social media content for <strong>Digging Deeper</strong> to extend broadcast reach, and independently produce cinematic motorsport edits with precision pacing and advanced color grading.</p>
-      <p>I've taken my camera everywhere — race tracks, coastlines, airport tarmacs, and everywhere in between.</p>
-      <a class="resume-btn" id="resume-link" href="./GrantHughesResume.pdf" download="GrantHughesResume.pdf">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M4 7l4 4 4-4M2 13h12"/></svg>
-        Download Resume
-      </a>
-    </div>
-    <div class="about-skills">
-      <div class="skill-item">
-        <p class="skill-label">ROLE</p>
-        <p class="skill-value" id="skill-role">Camera Operator · Broadcast Producer · Video Editor · Photographer</p>
+<!-- ABOUT PAGE -->
+<div class="page" id="page-about">
+  <div class="inner-page">
+    <p class="section-header">// 01 — ABOUT</p>
+    <h2 class="section-title">WHO I AM</h2>
+    <div class="about-grid">
+      <div class="about-bio" id="about-bio-text">
+        <p>I'm <strong>Grant Hughes</strong> — a broadcast production student at Northwest Missouri State University balancing technical storytelling, live sports production, and independent content creation. Expected graduation Spring 2027.</p>
+        <p>At <strong>Catvision — NWMSU Athletics</strong>, I operate broadcast cameras for NCAA Division II football, basketball, soccer, volleyball, and baseball. I serve as the <strong>High Wide camera for Bearcat Football</strong>, delivering the primary field-wide program angle under live director instruction — including off-campus at Children's Mercy Soccer Stadium.</p>
+        <p>I produce <strong>Hidden Variables</strong> segments for KNWT TV — 3-minute technical pieces translating complex gaming systems into accessible visual narratives, managed from concept through final export in Adobe Creative Suite.</p>
+        <p>I also develop social media content for <strong>Digging Deeper</strong> to extend broadcast reach, and independently produce cinematic motorsport edits with precision pacing and advanced color grading.</p>
+        <p>I've taken my camera everywhere — race tracks, coastlines, airport tarmacs, and everywhere in between.</p>
+        <a class="resume-btn" id="resume-link" href="./GrantHughesResume.pdf" download="GrantHughesResume.pdf">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M4 7l4 4 4-4M2 13h12"/></svg>
+          Download Resume
+        </a>
       </div>
-      <div class="skill-item">
-        <p class="skill-label">AFFILIATION</p>
-        <p class="skill-value" id="skill-affil">Catvision / NWMSU Athletics · KNWT Channel 8 · Northwest Missourian</p>
-      </div>
-      <div class="skill-item">
-        <p class="skill-label">SOFTWARE</p>
-        <p class="skill-value" id="skill-tools">Adobe Creative Cloud · DaVinci Resolve · OBS Studio · NewBlue · Blackmagic Design · TriCaster</p>
-      </div>
-      <div class="skill-item">
-        <p class="skill-label">LIVE PRODUCTION</p>
-        <p class="skill-value" id="skill-live">Multi-camera directing · Live shot selection · Headset coordination · Scorebug integration · Lower thirds · Director timing</p>
-      </div>
-      <div class="skill-item">
-        <p class="skill-label">SPECIALTIES</p>
-        <p class="skill-value" id="skill-spec">Sports broadcast · Short-form edit · Motion graphics · Color grading · News packages</p>
+      <div class="about-skills">
+        <div class="skill-item">
+          <p class="skill-label">ROLE</p>
+          <p class="skill-value" id="skill-role">Camera Operator · Broadcast Producer · Video Editor · Photographer</p>
+        </div>
+        <div class="skill-item">
+          <p class="skill-label">AFFILIATION</p>
+          <p class="skill-value" id="skill-affil">Catvision / NWMSU Athletics · KNWT Channel 8 · Northwest Missourian</p>
+        </div>
+        <div class="skill-item">
+          <p class="skill-label">SOFTWARE</p>
+          <p class="skill-value" id="skill-tools">Adobe Creative Cloud · DaVinci Resolve · OBS Studio · NewBlue · Blackmagic Design · TriCaster</p>
+        </div>
+        <div class="skill-item">
+          <p class="skill-label">LIVE PRODUCTION</p>
+          <p class="skill-value" id="skill-live">Multi-camera directing · Live shot selection · Headset coordination · Scorebug integration · Lower thirds · Director timing</p>
+        </div>
+        <div class="skill-item">
+          <p class="skill-label">SPECIALTIES</p>
+          <p class="skill-value" id="skill-spec">Sports broadcast · Short-form edit · Motion graphics · Color grading · News packages</p>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- PROJECTS -->
-<section id="projects">
-  <p class="section-header">// 02 — PROJECTS</p>
-  <h2 class="section-title">FILE SYSTEM</h2>
-  <div class="fallout-terminal">
-    <div class="terminal-bar">
-      <div class="terminal-dot" style="background:#360066;"></div>
-      <div class="terminal-dot" style="background:#5A00AA;"></div>
-      <span>GRANTEDPERSPECTIVE :: ARCHIVE TERMINAL v2.6</span>
-    </div>
-    <div class="terminal-inner">
-      <p class="terminal-prompt">> WELCOME, USER. SELECT ARCHIVE CATEGORY TO ACCESS FILES.</p>
-      <div class="terminal-tabs">
-        <button class="tab-btn active" onclick="switchTab('video')">[ VIDEO ]</button>
-        <button class="tab-btn" onclick="switchTab('photo')">[ PHOTO ]</button>
-        <button class="tab-btn" onclick="switchTab('broadcast')">[ BROADCAST ]</button>
+<!-- PROJECTS PAGE -->
+<div class="page" id="page-projects">
+  <div class="inner-page">
+    <p class="section-header">// 02 — PROJECTS</p>
+    <h2 class="section-title">FILE SYSTEM</h2>
+    <div class="fallout-terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot" style="background:#360066;"></div>
+        <div class="terminal-dot" style="background:#5A00AA;"></div>
+        <span>GRANTEDPERSPECTIVE :: ARCHIVE TERMINAL v2.6</span>
       </div>
-      <div class="tab-content active" id="tab-video">
-        <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/video — <span id="video-count">0</span> FILES FOUND</p>
-        <div class="file-grid" id="grid-video"></div>
-      </div>
-      <div class="tab-content" id="tab-photo">
-        <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/photo — <span id="photo-count">0</span> FILES FOUND</p>
-        <div class="file-grid" id="grid-photo"></div>
-      </div>
-      <div class="tab-content" id="tab-broadcast">
-        <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/broadcast — <span id="broadcast-count">0</span> FILES FOUND</p>
-        <div class="file-grid" id="grid-broadcast"></div>
+      <div class="terminal-inner">
+        <p class="terminal-prompt">> WELCOME, USER. SELECT ARCHIVE CATEGORY TO ACCESS FILES.</p>
+        <div class="terminal-tabs">
+          <button class="tab-btn active" onclick="switchTab('video')">[ VIDEO ]</button>
+          <button class="tab-btn" onclick="switchTab('photo')">[ PHOTO ]</button>
+          <button class="tab-btn" onclick="switchTab('broadcast')">[ BROADCAST ]</button>
+        </div>
+        <div class="tab-content active" id="tab-video">
+          <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/video — <span id="video-count">0</span> FILES FOUND</p>
+          <div class="file-grid" id="grid-video"></div>
+        </div>
+        <div class="tab-content" id="tab-photo">
+          <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/photo — <span id="photo-count">0</span> FILES FOUND</p>
+          <div class="file-grid" id="grid-photo"></div>
+        </div>
+        <div class="tab-content" id="tab-broadcast">
+          <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/broadcast — <span id="broadcast-count">0</span> FILES FOUND</p>
+          <div class="file-grid" id="grid-broadcast"></div>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- CONTACT -->
-<section id="contact">
-  <p class="section-header">// 03 — CONTACT</p>
-  <h2 class="section-title">GET IN TOUCH</h2>
-  <div class="contact-grid">
-    <div>
-      <p class="contact-blurb" id="contact-blurb">Broadcast production student seeking opportunities in media. Available for freelance video, photography, and broadcast work.</p>
-      <div class="contact-links">
-        <a class="contact-link" id="contact-email" href="/cdn-cgi/l/email-protection#2f485d4e415b4a4b5f4a5d5c5f4a4c5b46594a6f48424e4643014c4042"><span class="link-label"><span class="__cf_email__" data-cfemail="9cfbeefdf2e8f9f8ecf9eeefecf9ffe8f5eaf9dcfbf1fdf5f0b2fff3f1">[email&#160;protected]</span></span><span>→</span></a>
-        <a class="contact-link" id="contact-youtube" href="https://www.youtube.com/@grantedperspective" target="_blank"><span class="link-label">YouTube — @grantedperspective</span><span>→</span></a>
-        <a class="contact-link" id="contact-instagram" href="https://www.instagram.com/grantedperspective/" target="_blank"><span class="link-label">Instagram — @grantedperspective</span><span>→</span></a>
-        <a class="contact-link" id="contact-linkedin" href="https://www.linkedin.com/in/grant-hughes-media/" target="_blank"><span class="link-label">LinkedIn — Grant Hughes</span><span>→</span></a>
+<!-- CONTACT PAGE -->
+<div class="page" id="page-contact">
+  <div class="inner-page">
+    <p class="section-header">// 03 — CONTACT</p>
+    <h2 class="section-title">GET IN TOUCH</h2>
+    <div class="contact-grid">
+      <div>
+        <p class="contact-blurb" id="contact-blurb">Broadcast production student seeking opportunities in media. Available for freelance video, photography, and broadcast work.</p>
+        <div class="contact-links">
+          <a class="contact-link" id="contact-email" href="mailto:grantedperspective@gmail.com"><span class="link-label">grantedperspective@gmail.com</span><span>→</span></a>
+          <a class="contact-link" id="contact-youtube" href="https://www.youtube.com/@grantedperspective" target="_blank"><span class="link-label">YouTube — @grantedperspective</span><span>→</span></a>
+          <a class="contact-link" id="contact-instagram" href="https://www.instagram.com/grantedperspective/" target="_blank"><span class="link-label">Instagram — @grantedperspective</span><span>→</span></a>
+          <a class="contact-link" id="contact-linkedin" href="https://www.linkedin.com/in/grant-hughes-media/" target="_blank"><span class="link-label">LinkedIn — Grant Hughes</span><span>→</span></a>
+        </div>
       </div>
+      <form class="contact-form" id="contact-form">
+        <div class="form-group"><label class="form-label">Name</label><input class="form-input" type="text" name="name" placeholder="Your name" required></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" name="email" placeholder="your@email.com" required></div>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" name="message" placeholder="What's on your mind?" required></textarea></div>
+        <button class="form-submit" type="submit" id="form-submit-btn">TRANSMIT →</button>
+        <p class="form-status" id="form-status"></p>
+      </form>
     </div>
-    <form class="contact-form" id="contact-form">
-      <div class="form-group"><label class="form-label">Name</label><input class="form-input" type="text" name="name" placeholder="Your name" required></div>
-      <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" name="email" placeholder="your@email.com" required></div>
-      <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" name="message" placeholder="What's on your mind?" required></textarea></div>
-      <button class="form-submit" type="submit" id="form-submit-btn">TRANSMIT →</button>
-      <p class="form-status" id="form-status"></p>
-    </form>
   </div>
-</section>
+</div>
 
 <footer>
   <p>© 2026 <span>GRANT HUGHES</span> · GRANTEDPERSPECTIVE · ALL RIGHTS RESERVED</p>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
+/* ===================== DATA ===================== */
 const STORAGE_KEY = 'gp_site_data';
 
 const defaultData = {
@@ -304,6 +428,15 @@ const defaultData = {
     './img/Image00023.JPG','./img/Image00024.JPG','./img/Image00025.JPG'
   ],
   videoFiles: [
+    {
+      title: 'HIDDEN VARIABLES EP.6',
+      description: 'The System That Keeps You Playing — SBMM/EOMM',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ UNLISTED ]',
+      placeholderMsg: 'LINK NOT YET ADDED.\nUPDATE VIA EDITOR.'
+    },
     {
       title: 'HIDDEN VARIABLES EP.5',
       description: 'Frustum culling, LODs, occlusion — IN PRODUCTION',
@@ -478,6 +611,14 @@ const defaultData = {
       placeholder: true,
       placeholderTitle: '[ BROADCAST ARCHIVE ]',
       placeholderMsg: 'BROADCAST FOOTAGE IS ARCHIVED INTERNALLY.\nCONTACT FOR REEL ACCESS.'
+    },
+    {
+      title: 'BEARCAT DOWNHILL 200 — PITCH',
+      description: 'Mobile production site survey · Remote/live production concept',
+      thumb: '',
+      link: './BeardownhillPitch.pdf',
+      placeholder: false,
+      tag: 'pitch'
     }
   ]
 };
@@ -491,6 +632,7 @@ function loadData() {
 
 function applyData(d) {
   document.getElementById('hero-tag').textContent = d.heroTag;
+  document.getElementById('hero-name').setAttribute('data-text', 'GRANT HUGHES');
   document.getElementById('hero-subtitle').textContent = d.heroSubtitle;
   document.getElementById('contact-blurb').textContent = d.contactBlurb;
   document.getElementById('skill-role').textContent = d.skillRole;
@@ -516,6 +658,63 @@ function applyData(d) {
   buildFileGrid('grid-broadcast', 'broadcast-count', d.broadcastFiles, 'broadcast');
 }
 
+/* ===================== FILE GRID ===================== */
+function buildFileGrid(containerId, countId, files, type) {
+  const grid = document.getElementById(containerId);
+  document.getElementById(countId).textContent = files.length;
+  grid.innerHTML = '';
+  files.forEach(file => {
+    const card = document.createElement('div');
+    const isPlaceholder = file.placeholder === true;
+    const hasLink = file.link && file.link !== '#' && file.link !== '';
+    card.className = 'file-card' + (hasLink ? ' clickable' : '');
+
+    if (hasLink) {
+      card.onclick = () => window.open(file.link, '_blank');
+    } else if (isPlaceholder) {
+      card.style.cursor = 'pointer';
+      card.onclick = () => {
+        const overlay = card.querySelector('.file-overlay');
+        if (overlay) overlay.classList.add('visible');
+      };
+    }
+
+    const icon = type === 'video'
+      ? '<polygon points="5,3 19,12 5,21"/>'
+      : '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/>';
+
+    const thumbHtml = file.thumb
+      ? `<img src="${file.thumb}" alt="${file.title}" loading="lazy">`
+      : `<div class="file-thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="${type === 'video' ? '#5A00AA' : '#444'}" stroke-width="1">${icon}</svg></div>`;
+
+    const overlayHtml = isPlaceholder ? `
+      <div class="file-overlay">
+        <p class="file-overlay-title">${file.placeholderTitle || '[ RESTRICTED ]'}</p>
+        <p class="file-overlay-msg">${(file.placeholderMsg || 'CONTENT NOT AVAILABLE.').replace(/\n/g, '<br>')}</p>
+        <span class="file-overlay-close" onclick="event.stopPropagation(); this.parentElement.classList.remove('visible');">[ CLOSE ]</span>
+      </div>` : '';
+
+    const tagClass = file.tag || type;
+    card.innerHTML = `
+      <div class="file-thumb">${thumbHtml}</div>
+      <span class="file-tag ${tagClass}">${(file.tag || type).toUpperCase()}</span>
+      <div class="file-info">
+        <p class="file-name">${file.title}</p>
+        <p class="file-meta">${file.description}</p>
+      </div>
+      ${overlayHtml}`;
+    grid.appendChild(card);
+  });
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+/* ===================== TV GRID ===================== */
 function buildTVGrid(images) {
   const grid = document.getElementById('tvGrid');
   grid.innerHTML = '';
@@ -605,61 +804,118 @@ function scheduleTVCycles() {
   });
 }
 
-function buildFileGrid(containerId, countId, files, type) {
-  const grid = document.getElementById(containerId);
-  document.getElementById(countId).textContent = files.length;
-  grid.innerHTML = '';
-  files.forEach(file => {
-    const card = document.createElement('div');
-    const isPlaceholder = file.placeholder === true;
-    const hasLink = file.link && file.link !== '#' && file.link !== '';
-    card.className = 'file-card' + (hasLink ? ' clickable' : '');
+/* ===================== MOSAIC PAGE TRANSITION ===================== */
+let isTransitioning = false;
+let currentPage = 'home';
 
-    if (hasLink) {
-      card.onclick = () => window.open(file.link, '_blank');
-    } else if (isPlaceholder) {
-      card.style.cursor = 'pointer';
-      card.onclick = () => {
-        const overlay = card.querySelector('.file-overlay');
-        if (overlay) overlay.classList.add('visible');
-      };
+function navigateTo(pageId) {
+  if (isTransitioning || pageId === currentPage) return;
+  isTransitioning = true;
+
+  const canvas = document.getElementById('mosaic-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.opacity = '1';
+  canvas.style.pointerEvents = 'all';
+
+  const TILE = 32;
+  const cols = Math.ceil(canvas.width / TILE);
+  const rows = Math.ceil(canvas.height / TILE);
+  const totalTiles = cols * rows;
+
+  // Build tile list in random order for scatter effect
+  const tiles = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      tiles.push({ r, c });
+    }
+  }
+  // Shuffle
+  for (let i = tiles.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+  }
+
+  // Phase 1: shatter out — tiles fill with purple-tinted black over ~400ms
+  const phase1Duration = 380;
+  const phase1Start = performance.now();
+
+  function phase1(now) {
+    const elapsed = now - phase1Start;
+    const progress = Math.min(elapsed / phase1Duration, 1);
+    const revealCount = Math.floor(progress * totalTiles);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < revealCount; i++) {
+      const { r, c } = tiles[i];
+      const x = c * TILE;
+      const y = r * TILE;
+      // Each tile slightly different shade for texture
+      const shade = Math.floor(Math.random() * 20);
+      const purple = Math.floor(Math.random() * 40);
+      ctx.fillStyle = `rgb(${shade}, ${shade >> 1}, ${shade + purple})`;
+      ctx.fillRect(x, y, TILE, TILE);
     }
 
-    const icon = type === 'video'
-      ? '<polygon points="5,3 19,12 5,21"/>'
-      : '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/>';
+    if (progress < 1) {
+      requestAnimationFrame(phase1);
+    } else {
+      // Swap pages
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + pageId).classList.add('active');
+      window.scrollTo(0, 0);
+      currentPage = pageId;
 
-    const thumbHtml = file.thumb
-      ? `<img src="${file.thumb}" alt="${file.title}" loading="lazy">`
-      : `<div class="file-thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="${type === 'video' ? '#5A00AA' : '#444'}" stroke-width="1">${icon}</svg></div>`;
+      // Update nav active state
+      document.querySelectorAll('.nav-links a').forEach(a => {
+        a.classList.toggle('active', a.dataset.page === pageId);
+      });
 
-    const overlayHtml = isPlaceholder ? `
-      <div class="file-overlay">
-        <p class="file-overlay-title">${file.placeholderTitle || '[ RESTRICTED ]'}</p>
-        <p class="file-overlay-msg">${(file.placeholderMsg || 'CONTENT NOT AVAILABLE.').replace(/\n/g, '<br>')}</p>
-        <span class="file-overlay-close" onclick="event.stopPropagation(); this.parentElement.classList.remove('visible');">[ CLOSE ]</span>
-      </div>` : '';
+      // Brief hold, then phase 2
+      setTimeout(() => phase2(performance.now()), 60);
+    }
+  }
 
-    card.innerHTML = `
-      <div class="file-thumb">${thumbHtml}</div>
-      <span class="file-tag ${type}">${type.toUpperCase()}</span>
-      <div class="file-info">
-        <p class="file-name">${file.title}</p>
-        <p class="file-meta">${file.description}</p>
-      </div>
-      ${overlayHtml}`;
-    grid.appendChild(card);
-  });
+  // Phase 2: reform — tiles clear in random order over ~380ms
+  const phase2Duration = 380;
+  let phase2Start;
+
+  function phase2(now) {
+    if (!phase2Start) phase2Start = now;
+    const elapsed = now - phase2Start;
+    const progress = Math.min(elapsed / phase2Duration, 1);
+    const clearCount = Math.floor(progress * totalTiles);
+
+    // Redraw remaining tiles
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const remaining = totalTiles - clearCount;
+    for (let i = 0; i < remaining; i++) {
+      const { r, c } = tiles[i];
+      const x = c * TILE;
+      const y = r * TILE;
+      const shade = Math.floor(Math.random() * 20);
+      const purple = Math.floor(Math.random() * 40);
+      ctx.fillStyle = `rgb(${shade}, ${shade >> 1}, ${shade + purple})`;
+      ctx.fillRect(x, y, TILE, TILE);
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(phase2);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.style.opacity = '0';
+      canvas.style.pointerEvents = 'none';
+      isTransitioning = false;
+    }
+  }
+
+  requestAnimationFrame(phase1);
 }
 
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`).classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-}
-
-// Formspree contact form
+/* ===================== CONTACT FORM ===================== */
 document.getElementById('contact-form').addEventListener('submit', async function(e) {
   e.preventDefault();
   const btn = document.getElementById('form-submit-btn');
@@ -689,7 +945,7 @@ document.getElementById('contact-form').addEventListener('submit', async functio
   btn.textContent = 'TRANSMIT →';
 });
 
-// Init
+/* ===================== INIT ===================== */
 const data = loadData();
 applyData(data);
 </script>
