@@ -223,6 +223,13 @@
   .file-overlay-close { margin-top: 0.75rem; font-family: 'Share Tech Mono', monospace; font-size: 0.55rem; color: #444; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; border: 1px solid #333; padding: 3px 10px; transition: color 0.2s, border-color 0.2s; }
   .file-overlay-close:hover { color: var(--purple); border-color: var(--purple); }
 
+  /* SUBSECTIONS */
+  .subsection { margin-top: 2rem; border-top: 1px solid #1a1a1a; padding-top: 1.5rem; }
+  .subsection-header { margin-bottom: 0.4rem; }
+  .subsection-title { font-family: 'VT323', monospace; font-size: 1.5rem; color: #fff; letter-spacing: 3px; text-transform: uppercase; }
+  .subsection-title span { color: var(--purple); }
+  .subsection-desc { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: #666; letter-spacing: 1px; line-height: 1.7; margin-bottom: 1rem; max-width: 600px; }
+
   /* ===================== CONTACT PAGE ===================== */
   #page-contact { background: #000; border-top: 1px solid var(--purple-dark); }
   .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 900px; }
@@ -301,7 +308,7 @@
         <p>I'm <strong>Grant Hughes</strong> — a broadcast production student at Northwest Missouri State University balancing technical storytelling, live sports production, and independent content creation. Expected graduation Spring 2027.</p>
         <p>At <strong>Catvision — NWMSU Athletics</strong>, I operate broadcast cameras for NCAA Division II football, basketball, soccer, volleyball, and baseball. I serve as the <strong>High Wide camera for Bearcat Football</strong>, delivering the primary field-wide program angle under live director instruction — including off-campus at Children's Mercy Soccer Stadium.</p>
         <p>I produce <strong>Hidden Variables</strong> segments for KNWT TV — 3-minute technical pieces translating complex gaming systems into accessible visual narratives, managed from concept through final export in Adobe Creative Suite.</p>
-        <p>I also develop social media content for <strong>Digging Deeper</strong> to extend broadcast reach, and independently produce cinematic motorsport edits with precision pacing and advanced color grading.</p>
+        <p>I also develop social media content for <strong>Digging Deeper</strong> to extend broadcast reach.</p>
         <p>I've taken my camera everywhere — race tracks, coastlines, airport tarmacs, and everywhere in between.</p>
         <a class="resume-btn" id="resume-link" href="./GrantHughesResume.pdf" download="GrantHughesResume.pdf">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M4 7l4 4 4-4M2 13h12"/></svg>
@@ -327,7 +334,7 @@
         </div>
         <div class="skill-item">
           <p class="skill-label">SPECIALTIES</p>
-          <p class="skill-value" id="skill-spec">Sports broadcast · Short-form edit · Motion graphics · Color grading · News packages</p>
+          <p class="skill-value" id="skill-spec">Sports broadcast · Short-form edit · Motion graphics · News packages</p>
         </div>
       </div>
     </div>
@@ -355,6 +362,22 @@
         <div class="tab-content active" id="tab-video">
           <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/video — <span id="video-count">0</span> FILES FOUND</p>
           <div class="file-grid" id="grid-video"></div>
+
+          <div class="subsection">
+            <div class="subsection-header">
+              <p class="subsection-title">HIDDEN <span>VARIABLES</span></p>
+              <p class="subsection-desc">An episodic YouTube series breaking down the invisible systems inside games — matchmaking, algorithms, rendering, psychology. Every episode is written, shot, and edited solo.</p>
+            </div>
+            <div class="file-grid" id="grid-hv"></div>
+          </div>
+
+          <div class="subsection">
+            <div class="subsection-header">
+              <p class="subsection-title">DIGGING <span>DEEPER</span></p>
+              <p class="subsection-desc">Student news show produced in partnership with the Northwest Missourian. I handle social media production — short-form content, reels, and segment clips for KNWT's platforms.</p>
+            </div>
+            <div class="file-grid" id="grid-dd"></div>
+          </div>
         </div>
         <div class="tab-content" id="tab-photo">
           <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/photo — <span id="photo-count">0</span> FILES FOUND</p>
@@ -415,7 +438,7 @@ const defaultData = {
   skillAffil: 'Catvision / NWMSU Athletics · KNWT Channel 8 · Northwest Missourian',
   skillTools: 'Adobe Creative Cloud · DaVinci Resolve · OBS Studio · NewBlue · Blackmagic Design · TriCaster',
   skillLive: 'Multi-camera directing · Live shot selection · Headset coordination · Scorebug integration · Lower thirds · Director timing',
-  skillSpec: 'Sports broadcast · Short-form edit · Motion graphics · Color grading · News packages',
+  skillSpec: 'Sports broadcast · Short-form edit · Motion graphics · News packages',
   resumeFile: 'GrantHughesResume.pdf',
   heroImages: [
     './img/Image00001.JPG','./img/Image00002.JPG','./img/Image00003.JPG',
@@ -428,6 +451,38 @@ const defaultData = {
     './img/Image00023.JPG','./img/Image00024.JPG','./img/Image00025.JPG'
   ],
   videoFiles: [
+    {
+      title: 'SLICE OF LIFE — MINI DOC',
+      description: 'Dean Snepp — Owner of three similar Mercury Cougars',
+      thumb: 'https://img.youtube.com/vi/41iuG390s18/maxresdefault.jpg',
+      link: 'https://youtu.be/41iuG390s18?si=sVsbDnzQieertxcy'
+    },
+    {
+      title: 'PLAYBACK — SHORT FILM',
+      description: '12 min · First short film · School project',
+      thumb: 'https://img.youtube.com/vi/LEAzeHEbfbM/maxresdefault.jpg',
+      link: 'https://youtu.be/LEAzeHEbfbM?si=dvI79buYHKGQbe3b'
+    }
+  ],
+  hvFiles: [
+    {
+      title: 'HIDDEN VARIABLES EP.8',
+      description: '3D Spatial Audio & HRTF',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ IN PRODUCTION ]',
+      placeholderMsg: 'THIS EPISODE IS CURRENTLY IN PRODUCTION.\nCHECK BACK SOON.'
+    },
+    {
+      title: 'HIDDEN VARIABLES EP.7',
+      description: 'PC Components & CPU-GPU Communication',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ SCRAPPED ]',
+      placeholderMsg: 'THIS EPISODE WAS SCRAPPED.\nEP.8 IS IN PRODUCTION.'
+    },
     {
       title: 'HIDDEN VARIABLES EP.6',
       description: 'The System That Keeps You Playing — MMR, Elo & EOMM',
@@ -445,12 +500,6 @@ const defaultData = {
       placeholder: true,
       placeholderTitle: '[ UNLISTED ]',
       placeholderMsg: 'LINK NOT YET ADDED.\nUPDATE VIA EDITOR.'
-    },
-    {
-      title: 'LANDO NORRIS — EDIT',
-      description: 'Cinematic motorsport edit · Feb 2026',
-      thumb: 'https://img.youtube.com/vi/fRwyxYfPpZY/maxresdefault.jpg',
-      link: 'https://youtu.be/fRwyxYfPpZY?si=sY-9y7lOuhPFSeb_'
     },
     {
       title: 'HIDDEN VARIABLES EP.4',
@@ -478,36 +527,38 @@ const defaultData = {
       placeholder: true,
       placeholderTitle: '[ ACCESS RESTRICTED ]',
       placeholderMsg: 'THIS FILE IS NOT PUBLICLY AVAILABLE.\nCONTACT FOR ACCESS.'
+    }
+  ],
+  ddFiles: [
+    {
+      title: 'DIGGING DEEPER — REEL #1',
+      description: 'Social media content · KNWT Instagram',
+      thumb: '',
+      link: 'https://www.instagram.com/reel/DUoPzLEkYet/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
     },
     {
-      title: 'SLICE OF LIFE — MINI DOC',
-      description: 'Dean Snepp — Owner of three similar Mercury Cougars',
-      thumb: 'https://img.youtube.com/vi/41iuG390s18/maxresdefault.jpg',
-      link: 'https://youtu.be/41iuG390s18?si=sVsbDnzQieertxcy'
+      title: 'DIGGING DEEPER — REEL #2',
+      description: 'Social media content · KNWT Instagram',
+      thumb: '',
+      link: 'https://www.instagram.com/reel/DU1ZqZGDSEu/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
     },
     {
-      title: 'PLAYBACK — SHORT FILM',
-      description: '12 min · First short film · School project',
-      thumb: 'https://img.youtube.com/vi/LEAzeHEbfbM/maxresdefault.jpg',
-      link: 'https://youtu.be/LEAzeHEbfbM?si=dvI79buYHKGQbe3b'
+      title: 'DIGGING DEEPER — REEL #3',
+      description: 'Social media content · KNWT Instagram',
+      thumb: '',
+      link: 'https://www.instagram.com/reel/DVJiV6uCd18/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
     },
     {
-      title: 'DIGGING DEEPER — SOCIAL',
-      description: 'Short-form clips & social media content',
-      thumb: 'https://img.youtube.com/vi/zSWFjM6IzP4/maxresdefault.jpg',
-      link: 'https://youtu.be/zSWFjM6IzP4?si=ijwXZl3Qedh0ES04'
+      title: 'DIGGING DEEPER — REEL #4',
+      description: 'Social media content · KNWT Instagram',
+      thumb: '',
+      link: 'https://www.instagram.com/reel/DWY4eEahI-n/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
     },
     {
-      title: 'DIGGING DEEPER — SOCIAL #2',
-      description: 'Short-form clips & social media content',
-      thumb: 'https://img.youtube.com/vi/SePSjik4Ty0/maxresdefault.jpg',
-      link: 'https://youtu.be/SePSjik4Ty0?si=Vmr4kbiReSnIBF7v'
-    },
-    {
-      title: 'DIGGING DEEPER — SOCIAL #3',
-      description: 'Short-form clips & social media content',
-      thumb: 'https://img.youtube.com/vi/maVAMuPOVvI/maxresdefault.jpg',
-      link: 'https://youtu.be/maVAMuPOVvI?si=kLt5XpSda8-9RorP'
+      title: 'DIGGING DEEPER — REEL #5',
+      description: 'Social media content · KNWT Instagram',
+      thumb: '',
+      link: 'https://www.instagram.com/reel/DWgxbmpkdNS/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
     }
   ],
   photoFiles: [
@@ -604,15 +655,6 @@ const defaultData = {
       placeholderMsg: 'BROADCAST FOOTAGE IS ARCHIVED INTERNALLY.\nCONTACT FOR REEL ACCESS.'
     },
     {
-      title: 'HIDDEN VARIABLES — KNWT PACKS',
-      description: '3-min technical segments · Full production workflow',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ BROADCAST ARCHIVE ]',
-      placeholderMsg: 'BROADCAST FOOTAGE IS ARCHIVED INTERNALLY.\nCONTACT FOR REEL ACCESS.'
-    },
-    {
       title: 'BEARCAT DOWNHILL 200 — PITCH',
       description: 'Mobile production site survey · Remote/live production concept',
       thumb: '',
@@ -654,6 +696,8 @@ function applyData(d) {
 
   buildTVGrid(d.heroImages);
   buildFileGrid('grid-video', 'video-count', d.videoFiles, 'video');
+  buildFileGrid('grid-hv', null, d.hvFiles, 'video');
+  buildFileGrid('grid-dd', null, d.ddFiles, 'video');
   buildFileGrid('grid-photo', 'photo-count', d.photoFiles, 'photo');
   buildFileGrid('grid-broadcast', 'broadcast-count', d.broadcastFiles, 'broadcast');
 }
@@ -661,7 +705,8 @@ function applyData(d) {
 /* ===================== FILE GRID ===================== */
 function buildFileGrid(containerId, countId, files, type) {
   const grid = document.getElementById(containerId);
-  document.getElementById(countId).textContent = files.length;
+  if (!grid) return;
+  if (countId) document.getElementById(countId).textContent = files.length;
   grid.innerHTML = '';
   files.forEach(file => {
     const card = document.createElement('div');
@@ -715,23 +760,58 @@ function switchTab(tab) {
 }
 
 /* ===================== TV GRID ===================== */
+let tvImagePool = [];
+let tvImageIndex = 0;
+
 function buildTVGrid(images) {
+  tvImagePool = [...images].sort(() => Math.random() - 0.5); // shuffle pool once
+  tvImageIndex = 0;
+
   const grid = document.getElementById('tvGrid');
   grid.innerHTML = '';
-  images.forEach(src => {
+
+  // Fixed 16-unit grid — no images loaded yet
+  for (let i = 0; i < 16; i++) {
     const unit = document.createElement('div');
     unit.className = 'tv-unit off';
     unit.innerHTML = `
       <div class="tv-screen">
-        <img src="${src}" alt="" loading="lazy">
         <canvas class="tv-canvas"></canvas>
         <div class="tv-scanlines"></div>
       </div>
       <div class="tv-glare"></div>
       <div class="tv-power-dot"></div>`;
     grid.appendChild(unit);
-  });
+  }
   scheduleTVCycles();
+}
+
+// Pull next image from pool, cycling infinitely
+function getNextTVImage() {
+  if (!tvImagePool.length) return null;
+  const src = tvImagePool[tvImageIndex % tvImagePool.length];
+  tvImageIndex++;
+  return src;
+}
+
+// Inject image into TV right before powering on
+function loadTVImage(unit, callback) {
+  const screen = unit.querySelector('.tv-screen');
+  // Remove any existing img
+  const old = screen.querySelector('img');
+  if (old) old.remove();
+
+  const src = getNextTVImage();
+  if (!src) { callback(); return; }
+
+  const img = document.createElement('img');
+  img.alt = '';
+  img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;border-radius:6px;opacity:0;transition:opacity 0.1s;';
+  // Insert before canvas
+  screen.insertBefore(img, screen.querySelector('canvas'));
+  img.onload = () => callback();
+  img.onerror = () => callback();
+  img.src = src;
 }
 
 function drawStatic(canvas) {
@@ -747,19 +827,23 @@ function drawStatic(canvas) {
 }
 
 function powerOnTV(unit) {
-  const canvas = unit.querySelector('.tv-canvas');
-  unit.classList.remove('off');
-  canvas.style.opacity = '1';
-  drawStatic(canvas);
-  let f = 0;
-  const fl = setInterval(() => {
+  loadTVImage(unit, () => {
+    const canvas = unit.querySelector('.tv-canvas');
+    const img = unit.querySelector('img');
+    unit.classList.remove('off');
+    canvas.style.opacity = '1';
     drawStatic(canvas);
-    if (++f > 6) {
-      clearInterval(fl);
-      canvas.style.opacity = '0';
-      unit.classList.add('on');
-    }
-  }, 60);
+    let f = 0;
+    const fl = setInterval(() => {
+      drawStatic(canvas);
+      if (++f > 6) {
+        clearInterval(fl);
+        canvas.style.opacity = '0';
+        if (img) img.style.opacity = '1';
+        unit.classList.add('on');
+      }
+    }, 60);
+  });
 }
 
 function powerOffTV(unit) {
@@ -782,6 +866,9 @@ function powerOffTV(unit) {
         canvas.style.opacity = '0';
         unit.classList.remove('on');
         unit.classList.add('off');
+        // Hide img so next power-on loads a fresh one
+        const img = unit.querySelector('img');
+        if (img) img.style.opacity = '0';
       }
     }, 30);
   }, 80);
