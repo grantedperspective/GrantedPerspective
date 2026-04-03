@@ -1,17 +1,1035 @@
-function initData() {
-    const url = '/site-data.json?v=1680498554'; // Replace TIMESTAMP with the current timestamp
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Network response was not ok: ${response.statusText}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Process the data
-        })
-        .catch(error => {
-            console.error('Error loading data:', error);
-            // Fallback logic can go here
-        });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grant Hughes — GrantedPerspective</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&family=Oswald:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #000000;
+    --purple: #5A00AA;
+    --purple-dark: #360066;
+    --grey: #E6E8E6;
+    --crt-green: #39ff14;
+    --bezel: #1a1a1a;
+    --bezel-edge: #2d2d2d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: #000; color: var(--grey); font-family: 'Space Mono', monospace; overflow-x: hidden; }
+
+  /* HALFTONE BG TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(90,0,170,0.18) 1px, transparent 1px);
+    background-size: 18px 18px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(0,0,0,0.95);
+    border-bottom: 1px solid var(--purple-dark);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 56px;
+    backdrop-filter: blur(8px);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; cursor: pointer; }
+  .nav-logo-img { height: 34px; width: auto; object-fit: contain; display: block; }
+  .nav-logo-text { font-family: 'VT323', monospace; font-size: 1.4rem; color: var(--purple); letter-spacing: 2px; }
+  .nav-logo-text span { color: var(--grey); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--grey); text-decoration: none; font-size: 0.7rem;
+    letter-spacing: 2px; text-transform: uppercase;
+    font-family: 'Share Tech Mono', monospace; transition: color 0.2s;
+    cursor: pointer; background: none; border: none; padding: 0;
+  }
+  .nav-links a:hover { color: var(--purple); }
+  .nav-links a.active { color: var(--purple); border-bottom: 1px solid var(--purple); padding-bottom: 2px; }
+
+  /* MOSAIC TRANSITION CANVAS */
+  #mosaic-canvas {
+    position: fixed; inset: 0; z-index: 900;
+    pointer-events: none; opacity: 0;
+  }
+
+  /* PAGES */
+  .page { display: none; position: relative; z-index: 1; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ===================== HOME PAGE ===================== */
+  #page-home { padding: 56px 0 0; background: #000; overflow: hidden; min-height: 100vh; }
+  .tv-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 10px; padding: 10px; width: 100%;
+  }
+  .tv-unit {
+    position: relative; aspect-ratio: 4/3; background: var(--bezel);
+    border-radius: 12px; border: 3px solid var(--bezel-edge);
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 4px 12px rgba(0,0,0,0.9);
+    overflow: hidden;
+  }
+  .tv-screen { position: absolute; inset: 6px; border-radius: 8px; background: #000; overflow: hidden; z-index: 2; }
+  .tv-screen img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 6px; opacity: 0; transition: opacity 0.1s; }
+  .tv-unit.on .tv-screen img { opacity: 1; }
+  .tv-canvas { position: absolute; inset: 0; border-radius: 6px; z-index: 4; opacity: 0; pointer-events: none; }
+  .tv-scanlines {
+    position: absolute; inset: 0; border-radius: 6px;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
+    z-index: 5; pointer-events: none;
+  }
+  .tv-glare {
+    position: absolute; inset: 6px; border-radius: 8px;
+    background: radial-gradient(ellipse at 20% 15%, rgba(255,255,255,0.06) 0%, transparent 60%);
+    z-index: 6; pointer-events: none;
+  }
+  .tv-power-dot {
+    position: absolute; bottom: 3px; right: 8px; width: 4px; height: 4px;
+    border-radius: 50%; background: #222; z-index: 10; transition: background 0.2s;
+  }
+  .tv-unit.on .tv-power-dot { background: var(--crt-green); box-shadow: 0 0 4px var(--crt-green); }
+
+  .hero-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9) 40%, #000 100%);
+    padding: 6rem 3rem 3rem; z-index: 20; pointer-events: none;
+  }
+  .hero-tag {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 4px; color: var(--purple); text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+
+  /* HALFTONE HEADLINE */
+  .hero-name {
+    font-family: 'VT323', monospace; font-size: clamp(3rem, 8vw, 7rem);
+    color: #fff; line-height: 0.9; letter-spacing: 2px;
+    position: relative; display: inline-block;
+  }
+  .hero-name span { color: var(--purple); }
+  .hero-name::after {
+    content: attr(data-text);
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(90,0,170,0.55) 1.2px, transparent 1.2px);
+    background-size: 6px 6px;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  .hero-subtitle {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.75rem;
+    color: var(--grey); letter-spacing: 3px; margin-top: 0.75rem; opacity: 0.7;
+  }
+  .hero-scroll { margin-top: 1.5rem; pointer-events: all; }
+  .hero-scroll a {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 3px; color: var(--purple); text-decoration: none;
+    text-transform: uppercase; border: 1px solid var(--purple-dark);
+    padding: 0.5rem 1.2rem; display: inline-block;
+    transition: background 0.2s, color 0.2s; cursor: pointer;
+  }
+  .hero-scroll a:hover { background: var(--purple-dark); color: #fff; }
+
+  /* ===================== INNER PAGES ===================== */
+  .inner-page { padding: 100px 2rem 4rem; min-height: 100vh; position: relative; z-index: 1; }
+
+  .section-header {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 4px; color: var(--purple); text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+
+  /* HALFTONE SECTION TITLE */
+  .section-title {
+    font-family: 'Oswald', sans-serif; font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 2rem; padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--purple); display: inline-block;
+    position: relative;
+  }
+  .section-title::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(90,0,170,0.4) 1px, transparent 1px);
+    background-size: 5px 5px;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  /* ===================== ABOUT PAGE ===================== */
+  #page-about { background: #000; border-top: 1px solid var(--purple-dark); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 1100px; }
+  .about-bio p { font-size: 0.85rem; line-height: 1.9; color: #ddd; margin-bottom: 1rem; font-family: 'Share Tech Mono', monospace; }
+  .about-bio p strong { color: var(--purple); font-weight: 400; }
+  .resume-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem; background: var(--purple); color: #fff;
+    font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; letter-spacing: 2px;
+    text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s;
+  }
+  .resume-btn:hover { background: var(--purple-dark); }
+  .resume-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .about-skills { display: flex; flex-direction: column; gap: 1rem; }
+  .skill-item { border: 1px solid var(--purple-dark); padding: 0.75rem 1rem; }
+  .skill-label { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 3px; color: var(--purple); text-transform: uppercase; margin-bottom: 0.3rem; }
+  .skill-value { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: #e0e0e0; line-height: 1.6; }
+
+  /* ===================== PROJECTS PAGE ===================== */
+  #page-projects { background: #050505; }
+  .fallout-terminal { background: #000; border: 1px solid var(--purple-dark); max-width: 1100px; }
+  .terminal-bar { background: var(--purple-dark); padding: 0.4rem 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .terminal-bar span { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 3px; color: #ccc; text-transform: uppercase; }
+  .terminal-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .terminal-inner { padding: 2rem; font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--purple); }
+  .terminal-prompt { color: #888; margin-bottom: 0.3rem; }
+  .terminal-tabs { display: flex; gap: 0; margin: 1.5rem 0 0; border-bottom: 1px solid var(--purple-dark); flex-wrap: wrap; }
+  .tab-btn {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 2px;
+    text-transform: uppercase; padding: 0.6rem 1.5rem; background: none; border: none;
+    cursor: pointer; color: #555; border-bottom: 2px solid transparent; transition: all 0.2s;
+  }
+  .tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); }
+  .tab-btn:hover { color: #999; }
+  .tab-content { display: none; padding-top: 1.5rem; }
+  .tab-content.active { display: block; }
+  .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+  .file-card { border: 1px solid #222; background: #0a0a0a; position: relative; overflow: hidden; transition: border-color 0.2s, background 0.2s; }
+  .file-card.clickable { cursor: pointer; }
+  .file-card.clickable:hover { border-color: var(--purple); background: #0f0010; }
+  .file-thumb { width: 100%; aspect-ratio: 16/9; background: #111; overflow: hidden; position: relative; }
+  .file-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .file-thumb-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #111; }
+  .file-thumb-placeholder svg { width: 32px; height: 32px; opacity: 0.3; }
+  .file-info { padding: 0.6rem; }
+  .file-name { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--purple); letter-spacing: 1px; margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .file-meta { font-size: 0.55rem; color: #666; letter-spacing: 1px; }
+  .file-tag { position: absolute; top: 6px; right: 6px; font-family: 'Share Tech Mono', monospace; font-size: 0.5rem; letter-spacing: 1px; padding: 2px 6px; text-transform: uppercase; }
+  .file-tag.photo { background: #360066; color: var(--purple); }
+  .file-tag.video { background: #1a0033; color: #9b59b6; }
+  .file-tag.broadcast { background: #0a0020; color: #7a4ab8; }
+  .file-tag.pitch { background: #002200; color: #39ff14; }
+
+  .file-overlay { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.88); z-index: 20; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; text-align: center; }
+  .file-overlay.visible { display: flex; }
+  .file-overlay-title { font-family: 'VT323', monospace; font-size: 1.4rem; color: var(--purple); letter-spacing: 2px; margin-bottom: 0.4rem; }
+  .file-overlay-msg { font-family: 'Share Tech Mono', monospace; font-size: 0.55rem; color: #777; letter-spacing: 1px; line-height: 1.6; }
+  .file-overlay-close { margin-top: 0.75rem; font-family: 'Share Tech Mono', monospace; font-size: 0.55rem; color: #444; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; border: 1px solid #333; padding: 3px 10px; transition: color 0.2s, border-color 0.2s; }
+  .file-overlay-close:hover { color: var(--purple); border-color: var(--purple); }
+
+  /* SUBSECTIONS */
+  .subsection { margin-top: 2rem; border-top: 1px solid #1a1a1a; padding-top: 1.5rem; }
+  .subsection-header { margin-bottom: 0.4rem; }
+  .subsection-title { font-family: 'VT323', monospace; font-size: 1.5rem; color: #fff; letter-spacing: 3px; text-transform: uppercase; }
+  .subsection-title span { color: var(--purple); }
+  .subsection-desc { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: #666; letter-spacing: 1px; line-height: 1.7; margin-bottom: 1rem; max-width: 600px; }
+
+  /* ===================== CONTACT PAGE ===================== */
+  #page-contact { background: #000; border-top: 1px solid var(--purple-dark); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 900px; }
+  .contact-blurb { font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: #aaa; line-height: 1.9; margin-bottom: 2rem; }
+  .contact-links { display: flex; flex-direction: column; gap: 0.75rem; }
+  .contact-link { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; border: 1px solid #2a2a2a; text-decoration: none; color: #bbb; font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; letter-spacing: 1px; transition: border-color 0.2s, color 0.2s; }
+  .contact-link:hover { border-color: var(--purple); color: var(--purple); }
+  .contact-link .link-label { flex: 1; }
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+  .form-label { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 3px; color: var(--purple); text-transform: uppercase; }
+  .form-input, .form-textarea { background: #0a0a0a; border: 1px solid #2a2a2a; color: #e0e0e0; font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; padding: 0.6rem 0.75rem; outline: none; transition: border-color 0.2s; resize: none; width: 100%; }
+  .form-input:focus, .form-textarea:focus { border-color: var(--purple); }
+  .form-textarea { height: 100px; }
+  .form-submit { align-self: flex-start; padding: 0.65rem 2rem; background: var(--purple); color: #fff; border: none; font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+  .form-submit:hover { background: var(--purple-dark); }
+  .form-submit:disabled { background: #333; cursor: not-allowed; }
+  .form-status { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 2px; margin-top: 0.5rem; display: none; }
+  .form-status.success { color: var(--crt-green); display: block; }
+  .form-status.error { color: #ff4444; display: block; }
+
+  footer { border-top: 1px solid var(--purple-dark); padding: 2rem; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: #333; letter-spacing: 2px; position: relative; z-index: 1; }
+  footer span { color: var(--purple); }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #000; }
+  ::-webkit-scrollbar-thumb { background: var(--purple-dark); }
+
+  @media (max-width: 768px) {
+    .tv-grid { grid-template-columns: repeat(2, 1fr); }
+    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+    nav { padding: 0 1rem; }
+    .nav-links { gap: 1rem; }
+    .terminal-tabs { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MOSAIC TRANSITION CANVAS -->
+<canvas id="mosaic-canvas"></canvas>
+
+<nav>
+  <a class="nav-logo" onclick="navigateTo('home')">
+    <img class="nav-logo-img" src="./logo.png" alt="GrantedPerspective"
+      onerror="this.style.display='none'; document.getElementById('nav-logo-fallback').style.display='flex';">
+    <span class="nav-logo-text" id="nav-logo-fallback" style="display:none;">GRANTED<span>PERSPECTIVE</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a onclick="navigateTo('about')" data-page="about">About</a></li>
+    <li><a onclick="navigateTo('projects')" data-page="projects">Projects</a></li>
+    <li><a onclick="navigateTo('contact')" data-page="contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div style="position:relative; min-height:100vh;">
+    <div class="tv-grid" id="tvGrid"></div>
+    <div class="hero-overlay">
+      <p class="hero-tag" id="hero-tag">// broadcaster · content creator · photographer</p>
+      <h1 class="hero-name" id="hero-name" data-text="GRANT HUGHES">GRANT<br><span>HUGHES</span></h1>
+      <p class="hero-subtitle" id="hero-subtitle">NORTHWEST MISSOURI STATE UNIVERSITY · KNWT · HIDDEN VARIABLES · DIGGING DEEPER</p>
+      <div class="hero-scroll"><a onclick="navigateTo('projects')">ENTER ›</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT PAGE -->
+<div class="page" id="page-about">
+  <div class="inner-page">
+    <p class="section-header">// 01 — ABOUT</p>
+    <h2 class="section-title">WHO I AM</h2>
+    <div class="about-grid">
+      <div class="about-bio" id="about-bio-text">
+        <p>I'm <strong>Grant Hughes</strong> — a broadcast production student at Northwest Missouri State University balancing technical storytelling, live sports production, and independent content creation. Expected graduation Spring 2027.</p>
+        <p>At <strong>Catvision — NWMSU Athletics</strong>, I operate broadcast cameras for NCAA Division II football, basketball, soccer, volleyball, and baseball. I serve as the <strong>High Wide camera for Bearcat Football</strong>, delivering the primary field-wide program angle under live director instruction — including off-campus at Children's Mercy Soccer Stadium.</p>
+        <p>I produce <strong>Hidden Variables</strong> segments for KNWT TV — 3-minute technical pieces translating complex gaming systems into accessible visual narratives, managed from concept through final export in Adobe Creative Suite.</p>
+        <p>I also develop social media content for <strong>Digging Deeper</strong> to extend broadcast reach.</p>
+        <p>I've taken my camera everywhere — race tracks, coastlines, airport tarmacs, and everywhere in between.</p>
+        <a class="resume-btn" id="resume-link" href="./GrantHughesResume.pdf" download="GrantHughesResume.pdf">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M4 7l4 4 4-4M2 13h12"/></svg>
+          Download Resume
+        </a>
+      </div>
+      <div class="about-skills">
+        <div class="skill-item">
+          <p class="skill-label">ROLE</p>
+          <p class="skill-value" id="skill-role">Camera Operator · Broadcast Producer · Video Editor · Photographer</p>
+        </div>
+        <div class="skill-item">
+          <p class="skill-label">AFFILIATION</p>
+          <p class="skill-value" id="skill-affil">Catvision / NWMSU Athletics · KNWT Channel 8 · Northwest Missourian</p>
+        </div>
+        <div class="skill-item">
+          <p class="skill-label">SOFTWARE</p>
+          <p class="skill-value" id="skill-tools">Adobe Creative Cloud · DaVinci Resolve · OBS Studio · NewBlue · Blackmagic Design · TriCaster</p>
+        </div>
+        <div class="skill-item">
+          <p class="skill-label">LIVE PRODUCTION</p>
+          <p class="skill-value" id="skill-live">Multi-camera directing · Live shot selection · Headset coordination · Scorebug integration · Lower thirds · Director timing</p>
+        </div>
+        <div class="skill-item">
+          <p class="skill-label">SPECIALTIES</p>
+          <p class="skill-value" id="skill-spec">Sports broadcast · Short-form edit · Motion graphics · News packages</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS PAGE -->
+<div class="page" id="page-projects">
+  <div class="inner-page">
+    <p class="section-header">// 02 — PROJECTS</p>
+    <h2 class="section-title">FILE SYSTEM</h2>
+    <div class="fallout-terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot" style="background:#360066;"></div>
+        <div class="terminal-dot" style="background:#5A00AA;"></div>
+        <span>GRANTEDPERSPECTIVE :: ARCHIVE TERMINAL v2.6</span>
+      </div>
+      <div class="terminal-inner">
+        <p class="terminal-prompt">> WELCOME, USER. SELECT ARCHIVE CATEGORY TO ACCESS FILES.</p>
+        <div class="terminal-tabs">
+          <button class="tab-btn active" onclick="switchTab('video')">[ VIDEO ]</button>
+          <button class="tab-btn" onclick="switchTab('photo')">[ PHOTO ]</button>
+          <button class="tab-btn" onclick="switchTab('broadcast')">[ BROADCAST ]</button>
+        </div>
+        <div class="tab-content active" id="tab-video">
+          <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/video — <span id="video-count">0</span> FILES FOUND</p>
+          <div class="file-grid" id="grid-video"></div>
+
+          <div class="subsection">
+            <div class="subsection-header">
+              <p class="subsection-title">HIDDEN <span>VARIABLES</span></p>
+              <p class="subsection-desc">An episodic YouTube series breaking down the invisible systems inside games — matchmaking, algorithms, rendering, psychology. Every episode is written, shot, and edited solo.</p>
+            </div>
+            <div class="file-grid" id="grid-hv"></div>
+          </div>
+
+          <div class="subsection">
+            <div class="subsection-header">
+              <p class="subsection-title">DIGGING <span>DEEPER</span></p>
+              <p class="subsection-desc">Student news show produced in partnership with the Northwest Missourian. I handle social media production — short-form content, reels, and segment clips for KNWT's platforms.</p>
+            </div>
+            <div class="file-grid" id="grid-dd"></div>
+          </div>
+        </div>
+        <div class="tab-content" id="tab-photo">
+          <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/photo — <span id="photo-count">0</span> FILES FOUND</p>
+          <div class="file-grid" id="grid-photo"></div>
+        </div>
+        <div class="tab-content" id="tab-broadcast">
+          <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/broadcast — <span id="broadcast-count">0</span> FILES FOUND</p>
+          <div class="file-grid" id="grid-broadcast"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT PAGE -->
+<div class="page" id="page-contact">
+  <div class="inner-page">
+    <p class="section-header">// 03 — CONTACT</p>
+    <h2 class="section-title">GET IN TOUCH</h2>
+    <div class="contact-grid">
+      <div>
+        <p class="contact-blurb" id="contact-blurb">Broadcast production student seeking opportunities in media. Available for freelance video, photography, and broadcast work.</p>
+        <div class="contact-links">
+          <a class="contact-link" id="contact-email" href="mailto:grantedperspective@gmail.com"><span class="link-label">grantedperspective@gmail.com</span><span>→</span></a>
+          <a class="contact-link" id="contact-youtube" href="https://www.youtube.com/@grantedperspective" target="_blank"><span class="link-label">YouTube — @grantedperspective</span><span>→</span></a>
+          <a class="contact-link" id="contact-instagram" href="https://www.instagram.com/grantedperspective/" target="_blank"><span class="link-label">Instagram — @grantedperspective</span><span>→</span></a>
+          <a class="contact-link" id="contact-linkedin" href="https://www.linkedin.com/in/grant-hughes-media/" target="_blank"><span class="link-label">LinkedIn — Grant Hughes</span><span>→</span></a>
+        </div>
+      </div>
+      <form class="contact-form" id="contact-form">
+        <div class="form-group"><label class="form-label">Name</label><input class="form-input" type="text" name="name" placeholder="Your name" required></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" name="email" placeholder="your@email.com" required></div>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" name="message" placeholder="What's on your mind?" required></textarea></div>
+        <button class="form-submit" type="submit" id="form-submit-btn">TRANSMIT →</button>
+        <p class="form-status" id="form-status"></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <span>GRANT HUGHES</span> · GRANTEDPERSPECTIVE · ALL RIGHTS RESERVED</p>
+</footer>
+
+<script>
+/* ===================== DATA ===================== */
+const STORAGE_KEY = 'gp_site_data';
+
+const defaultData = {
+  heroTag: '// broadcaster · content creator · photographer',
+  heroSubtitle: 'NORTHWEST MISSOURI STATE UNIVERSITY · KNWT · HIDDEN VARIABLES · DIGGING DEEPER',
+  contactBlurb: 'Broadcast production student seeking opportunities in media. Available for freelance video, photography, and broadcast work.',
+  contactEmail: 'grantedperspective@gmail.com',
+  contactYoutube: 'https://www.youtube.com/@grantedperspective',
+  contactInstagram: 'https://www.instagram.com/grantedperspective/',
+  contactLinkedin: 'https://www.linkedin.com/in/grant-hughes-media/',
+  skillRole: 'Camera Operator · Broadcast Producer · Video Editor · Photographer',
+  skillAffil: 'Catvision / NWMSU Athletics · KNWT Channel 8 · Northwest Missourian',
+  skillTools: 'Adobe Creative Cloud · DaVinci Resolve · OBS Studio · NewBlue · Blackmagic Design · TriCaster',
+  skillLive: 'Multi-camera directing · Live shot selection · Headset coordination · Scorebug integration · Lower thirds · Director timing',
+  skillSpec: 'Sports broadcast · Short-form edit · Motion graphics · News packages',
+  resumeFile: 'GrantHughesResume.pdf',
+  heroImages: [
+    './img/Image00001.JPG','./img/Image00002.JPG','./img/Image00003.JPG',
+    './img/Image00004.JPG','./img/Image00005.JPG','./img/Image00006.JPG',
+    './img/Image00007.JPG','./img/Image00008.JPG','./img/Image00009.JPG',
+    './img/Image00010.JPG','./img/Image00011.JPG','./img/Image00012.JPG',
+    './img/Image00013.JPG','./img/Image00015.JPG','./img/Image00016.JPG',
+    './img/Image00017.JPG','./img/Image00018.JPG','./img/Image00019.JPG',
+    './img/Image00020.JPG','./img/Image00021.JPG','./img/Image00022.JPG',
+    './img/Image00023.JPG','./img/Image00024.JPG','./img/Image00025.JPG'
+  ],
+  videoFiles: [
+    {
+      title: 'SLICE OF LIFE — MINI DOC',
+      description: 'Dean Snepp — Owner of three similar Mercury Cougars',
+      thumb: 'https://img.youtube.com/vi/41iuG390s18/maxresdefault.jpg',
+      link: 'https://youtu.be/41iuG390s18?si=sVsbDnzQieertxcy'
+    },
+    {
+      title: 'PLAYBACK — SHORT FILM',
+      description: '12 min · First short film · School project',
+      thumb: 'https://img.youtube.com/vi/LEAzeHEbfbM/maxresdefault.jpg',
+      link: 'https://youtu.be/LEAzeHEbfbM?si=dvI79buYHKGQbe3b'
+    }
+  ],
+  hvFiles: [
+    {
+      title: 'HIDDEN VARIABLES EP.8',
+      description: '3D Spatial Audio & HRTF',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ IN PRODUCTION ]',
+      placeholderMsg: 'THIS EPISODE IS CURRENTLY IN PRODUCTION.\nCHECK BACK SOON.'
+    },
+    {
+      title: 'HIDDEN VARIABLES EP.7',
+      description: 'PC Components & CPU-GPU Communication',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ SCRAPPED ]',
+      placeholderMsg: 'THIS EPISODE WAS SCRAPPED.\nEP.8 IS IN PRODUCTION.'
+    },
+    {
+      title: 'HIDDEN VARIABLES EP.6',
+      description: 'The System That Keeps You Playing — MMR, Elo & EOMM',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ UNLISTED ]',
+      placeholderMsg: 'LINK NOT YET ADDED.\nUPDATE VIA EDITOR.'
+    },
+    {
+      title: 'HIDDEN VARIABLES EP.5',
+      description: 'The World Behind Your Back — Frustum Culling, Occlusion & LOD',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ UNLISTED ]',
+      placeholderMsg: 'LINK NOT YET ADDED.\nUPDATE VIA EDITOR.'
+    },
+    {
+      title: 'HIDDEN VARIABLES EP.4',
+      description: 'Why Battle Passes Feel Hard to Ignore — Goal-Gradient, Loss Aversion & Sunk Cost',
+      thumb: 'https://img.youtube.com/vi/C0moU5GKMvo/maxresdefault.jpg',
+      link: 'https://youtu.be/C0moU5GKMvo?si=aJQc3sJySB1CXiTO'
+    },
+    {
+      title: 'HIDDEN VARIABLES EP.3',
+      description: "YouTube's Secret File on You — Clusters, Collaborative Filtering & Prediction",
+      thumb: 'https://img.youtube.com/vi/VM68CZKuAgI/maxresdefault.jpg',
+      link: 'https://youtu.be/VM68CZKuAgI?si=DkQKeXkFl7G80CFn'
+    },
+    {
+      title: 'HIDDEN VARIABLES EP.2',
+      description: 'How Speedrunners Break Games — TAS, Glitches, Routing & RNG',
+      thumb: 'https://img.youtube.com/vi/nEr4Iz_sNq8/maxresdefault.jpg',
+      link: 'https://youtu.be/nEr4Iz_sNq8?si=JAjzQRqd5GYCMCru'
+    },
+    {
+      title: 'HIDDEN VARIABLES EP.1',
+      description: "Latency Isn't Just Ping — End-to-End Latency & Peeker's Advantage",
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ ACCESS RESTRICTED ]',
+      placeholderMsg: 'THIS FILE IS NOT PUBLICLY AVAILABLE.\nCONTACT FOR ACCESS.'
+    }
+  ],
+  ddFiles: [
+    {
+      title: 'DIGGING DEEPER — REEL #1',
+      description: 'Social media content · KNWT Instagram',
+      thumb: '',
+      link: 'https://www.instagram.com/reel/DUoPzLEkYet/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
+    },
+    {
+      title: 'DIGGING DEEPER — REEL #2',
+      description: 'Social media content · KNWT Instagram',
+      thumb: '',
+      link: 'https://www.instagram.com/reel/DU1ZqZGDSEu/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
+    },
+    {
+      title: 'DIGGING DEEPER — REEL #3',
+      description: 'Social media content · KNWT Instagram',
+      thumb: '',
+      link: 'https://www.instagram.com/reel/DVJiV6uCd18/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
+    },
+    {
+      title: 'DIGGING DEEPER — REEL #4',
+      description: 'Social media content · KNWT Instagram',
+      thumb: '',
+      link: 'https://www.instagram.com/reel/DWY4eEahI-n/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
+    },
+    {
+      title: 'DIGGING DEEPER — REEL #5',
+      description: 'Social media content · KNWT Instagram',
+      thumb: '',
+      link: 'https://www.instagram.com/reel/DWgxbmpkdNS/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
+    }
+  ],
+  photoFiles: [
+    {
+      title: 'MOTORSPORT — TRACK & ROAD',
+      description: 'Race cars, road cars, track days',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ COMING SOON ]',
+      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
+    },
+    {
+      title: 'MIAMI — JAN 2025',
+      description: '193 items · Street & travel photography',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ COMING SOON ]',
+      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
+    },
+    {
+      title: 'COASTAL VIEWS',
+      description: 'Maritime & waterfront photography',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ COMING SOON ]',
+      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
+    },
+    {
+      title: 'PLANE SPOTTING — DEC 2025',
+      description: 'Airport & tarmac photography',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ COMING SOON ]',
+      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
+    },
+    {
+      title: 'E&K — ENGAGEMENT SESSION',
+      description: 'Jun 2025 · Portrait & lifestyle',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ COMING SOON ]',
+      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
+    },
+    {
+      title: 'CAR SHOW',
+      description: 'Show floor coverage',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ COMING SOON ]',
+      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
+    },
+    {
+      title: 'COFFEE BEAN — VARIOUS',
+      description: 'Lifestyle & product photography',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ COMING SOON ]',
+      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
+    }
+  ],
+  broadcastFiles: [
+    {
+      title: 'CATVISION — BEARCAT FOOTBALL',
+      description: 'High Wide angle · NCAA Div II · Main program angle',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ BROADCAST ARCHIVE ]',
+      placeholderMsg: 'BROADCAST FOOTAGE IS ARCHIVED INTERNALLY.\nCONTACT FOR REEL ACCESS.'
+    },
+    {
+      title: 'CATVISION — 2025 SEASON',
+      description: 'Football, basketball, soccer, volleyball, baseball',
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ BROADCAST ARCHIVE ]',
+      placeholderMsg: 'BROADCAST FOOTAGE IS ARCHIVED INTERNALLY.\nCONTACT FOR REEL ACCESS.'
+    },
+    {
+      title: 'NW VS PITT STATE — CMSS',
+      description: "Off-campus · Children's Mercy Soccer Stadium · Graphics op",
+      thumb: '',
+      link: '',
+      placeholder: true,
+      placeholderTitle: '[ BROADCAST ARCHIVE ]',
+      placeholderMsg: 'BROADCAST FOOTAGE IS ARCHIVED INTERNALLY.\nCONTACT FOR REEL ACCESS.'
+    },
+    {
+      title: 'BEARCAT DOWNHILL 200 — PITCH',
+      description: 'Mobile production site survey · Remote/live production concept',
+      thumb: '',
+      link: './BeardownhillPitch.pdf',
+      placeholder: false,
+      tag: 'pitch'
+    }
+  ]
+};
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? { ...defaultData, ...JSON.parse(saved) } : defaultData;
+  } catch(e) { return defaultData; }
 }
+
+function applyData(d) {
+  document.getElementById('hero-tag').textContent = d.heroTag;
+  document.getElementById('hero-name').setAttribute('data-text', 'GRANT HUGHES');
+  document.getElementById('hero-subtitle').textContent = d.heroSubtitle;
+  document.getElementById('contact-blurb').textContent = d.contactBlurb;
+  document.getElementById('skill-role').textContent = d.skillRole;
+  document.getElementById('skill-affil').textContent = d.skillAffil;
+  document.getElementById('skill-tools').textContent = d.skillTools;
+  document.getElementById('skill-spec').textContent = d.skillSpec;
+  if (document.getElementById('skill-live')) document.getElementById('skill-live').textContent = d.skillLive;
+
+  const emailEl = document.getElementById('contact-email');
+  emailEl.href = 'mailto:' + d.contactEmail;
+  emailEl.querySelector('.link-label').textContent = d.contactEmail;
+
+  document.getElementById('contact-youtube').href = d.contactYoutube;
+  document.getElementById('contact-instagram').href = d.contactInstagram;
+  document.getElementById('contact-linkedin').href = d.contactLinkedin;
+
+  const resumeLink = document.getElementById('resume-link');
+  if (resumeLink) resumeLink.href = './' + (d.resumeFile || 'GrantHughesResume.pdf');
+
+  buildTVGrid(d.heroImages);
+  buildFileGrid('grid-video', 'video-count', d.videoFiles, 'video');
+  buildFileGrid('grid-hv', null, d.hvFiles, 'video');
+  buildFileGrid('grid-dd', null, d.ddFiles, 'video');
+  buildFileGrid('grid-photo', 'photo-count', d.photoFiles, 'photo');
+  buildFileGrid('grid-broadcast', 'broadcast-count', d.broadcastFiles, 'broadcast');
+}
+
+/* ===================== FILE GRID ===================== */
+function buildFileGrid(containerId, countId, files, type) {
+  const grid = document.getElementById(containerId);
+  if (!grid) return;
+  if (countId) document.getElementById(countId).textContent = files.length;
+  grid.innerHTML = '';
+  files.forEach(file => {
+    const card = document.createElement('div');
+    const isPlaceholder = file.placeholder === true;
+    const hasLink = file.link && file.link !== '#' && file.link !== '';
+    card.className = 'file-card' + (hasLink ? ' clickable' : '');
+
+    if (hasLink) {
+      card.onclick = () => window.open(file.link, '_blank');
+    } else if (isPlaceholder) {
+      card.style.cursor = 'pointer';
+      card.onclick = () => {
+        const overlay = card.querySelector('.file-overlay');
+        if (overlay) overlay.classList.add('visible');
+      };
+    }
+
+    const icon = type === 'video'
+      ? '<polygon points="5,3 19,12 5,21"/>'
+      : '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/>';
+
+    const thumbHtml = file.thumb
+      ? `<img src="${file.thumb}" alt="${file.title}" loading="lazy">`
+      : `<div class="file-thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="${type === 'video' ? '#5A00AA' : '#444'}" stroke-width="1">${icon}</svg></div>`;
+
+    const overlayHtml = isPlaceholder ? `
+      <div class="file-overlay">
+        <p class="file-overlay-title">${file.placeholderTitle || '[ RESTRICTED ]'}</p>
+        <p class="file-overlay-msg">${(file.placeholderMsg || 'CONTENT NOT AVAILABLE.').replace(/\n/g, '<br>')}</p>
+        <span class="file-overlay-close" onclick="event.stopPropagation(); this.parentElement.classList.remove('visible');">[ CLOSE ]</span>
+      </div>` : '';
+
+    const tagClass = file.tag || type;
+    card.innerHTML = `
+      <div class="file-thumb">${thumbHtml}</div>
+      <span class="file-tag ${tagClass}">${(file.tag || type).toUpperCase()}</span>
+      <div class="file-info">
+        <p class="file-name">${file.title}</p>
+        <p class="file-meta">${file.description}</p>
+      </div>
+      ${overlayHtml}`;
+    grid.appendChild(card);
+  });
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+/* ===================== TV GRID ===================== */
+let tvImagePool = [];
+let tvImageIndex = 0;
+
+function buildTVGrid(images) {
+  tvImagePool = [...images].sort(() => Math.random() - 0.5);
+  tvImageIndex = 0;
+
+  const grid = document.getElementById('tvGrid');
+  grid.innerHTML = '';
+
+  for (let i = 0; i < 16; i++) {
+    const unit = document.createElement('div');
+    unit.className = 'tv-unit off';
+    unit.innerHTML = `
+      <div class="tv-screen">
+        <canvas class="tv-canvas"></canvas>
+        <div class="tv-scanlines"></div>
+      </div>
+      <div class="tv-glare"></div>
+      <div class="tv-power-dot"></div>`;
+    grid.appendChild(unit);
+  }
+  scheduleTVCycles();
+}
+
+function getNextTVImage() {
+  if (!tvImagePool.length) return null;
+  const src = tvImagePool[tvImageIndex % tvImagePool.length];
+  tvImageIndex++;
+  return src;
+}
+
+function loadTVImage(unit, callback) {
+  const screen = unit.querySelector('.tv-screen');
+  const old = screen.querySelector('img');
+  if (old) old.remove();
+
+  const src = getNextTVImage();
+  if (!src) { callback(); return; }
+
+  const img = document.createElement('img');
+  img.alt = '';
+  img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;border-radius:6px;opacity:0;transition:opacity 0.1s;';
+  screen.insertBefore(img, screen.querySelector('canvas'));
+  img.onload = () => callback();
+  img.onerror = () => callback();
+  img.src = src;
+}
+
+function drawStatic(canvas) {
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth || 200;
+  canvas.height = canvas.offsetHeight || 150;
+  const img = ctx.createImageData(canvas.width, canvas.height);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.random() > 0.5 ? Math.floor(Math.random() * 80) : 0;
+    img.data[i] = v; img.data[i+1] = v; img.data[i+2] = v; img.data[i+3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+function powerOnTV(unit) {
+  loadTVImage(unit, () => {
+    const canvas = unit.querySelector('.tv-canvas');
+    const img = unit.querySelector('img');
+    unit.classList.remove('off');
+    canvas.style.opacity = '1';
+    drawStatic(canvas);
+    let f = 0;
+    const fl = setInterval(() => {
+      drawStatic(canvas);
+      if (++f > 6) {
+        clearInterval(fl);
+        canvas.style.opacity = '0';
+        if (img) img.style.opacity = '1';
+        unit.classList.add('on');
+      }
+    }, 60);
+  });
+}
+
+function powerOffTV(unit) {
+  const canvas = unit.querySelector('.tv-canvas');
+  canvas.style.opacity = '0.6';
+  drawStatic(canvas);
+  setTimeout(() => {
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth || 200;
+    canvas.height = canvas.offsetHeight || 150;
+    let h = canvas.height / 2;
+    const mid = h;
+    const col = setInterval(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, mid - h * 0.05, canvas.width, h * 0.1);
+      h *= 0.7;
+      if (h < 0.5) {
+        clearInterval(col);
+        canvas.style.opacity = '0';
+        unit.classList.remove('on');
+        unit.classList.add('off');
+        const img = unit.querySelector('img');
+        if (img) img.style.opacity = '0';
+      }
+    }, 30);
+  }, 80);
+}
+
+function scheduleTVCycles() {
+  document.querySelectorAll('.tv-unit').forEach((unit, i) => {
+    const onDur = 4000 + Math.random() * 5000;
+    const offDur = 2000 + Math.random() * 6000;
+    function cycle() {
+      setTimeout(() => {
+        powerOnTV(unit);
+        setTimeout(() => {
+          powerOffTV(unit);
+          setTimeout(cycle, offDur + Math.random() * 3000);
+        }, onDur + Math.random() * 2000);
+      }, Math.random() * 2000);
+    }
+    setTimeout(cycle, Math.random() * 3000 + i * 120);
+  });
+}
+
+/* ===================== MOSAIC PAGE TRANSITION ===================== */
+let isTransitioning = false;
+let currentPage = 'home';
+
+function navigateTo(pageId) {
+  if (isTransitioning || pageId === currentPage) return;
+  isTransitioning = true;
+
+  const canvas = document.getElementById('mosaic-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.opacity = '1';
+  canvas.style.pointerEvents = 'all';
+
+  const TILE = 32;
+  const cols = Math.ceil(canvas.width / TILE);
+  const rows = Math.ceil(canvas.height / TILE);
+  const totalTiles = cols * rows;
+
+  const tiles = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      tiles.push({ r, c });
+    }
+  }
+  for (let i = tiles.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+  }
+
+  const phase1Duration = 380;
+  const phase1Start = performance.now();
+
+  function phase1(now) {
+    const elapsed = now - phase1Start;
+    const progress = Math.min(elapsed / phase1Duration, 1);
+    const revealCount = Math.floor(progress * totalTiles);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < revealCount; i++) {
+      const { r, c } = tiles[i];
+      const x = c * TILE;
+      const y = r * TILE;
+      const shade = Math.floor(Math.random() * 20);
+      const purple = Math.floor(Math.random() * 40);
+      ctx.fillStyle = `rgb(${shade}, ${shade >> 1}, ${shade + purple})`;
+      ctx.fillRect(x, y, TILE, TILE);
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(phase1);
+    } else {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + pageId).classList.add('active');
+      window.scrollTo(0, 0);
+      currentPage = pageId;
+
+      document.querySelectorAll('.nav-links a').forEach(a => {
+        a.classList.toggle('active', a.dataset.page === pageId);
+      });
+
+      setTimeout(() => requestAnimationFrame(phase2), 60);
+    }
+  }
+
+  const phase2Duration = 380;
+  let phase2Start = null;
+
+  function phase2(now) {
+    if (phase2Start === null) phase2Start = now;
+    const elapsed = now - phase2Start;
+    const progress = Math.min(elapsed / phase2Duration, 1);
+    const clearCount = Math.floor(progress * totalTiles);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const remaining = totalTiles - clearCount;
+    for (let i = 0; i < remaining; i++) {
+      const { r, c } = tiles[i];
+      const x = c * TILE;
+      const y = r * TILE;
+      const shade = Math.floor(Math.random() * 12);
+      const purple = Math.floor(Math.random() * 30);
+      ctx.fillStyle = `rgb(${shade}, ${shade >> 1}, ${shade + purple})`;
+      ctx.fillRect(x, y, TILE, TILE);
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(phase2);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.style.opacity = '0';
+      canvas.style.pointerEvents = 'none';
+      isTransitioning = false;
+    }
+  }
+
+  requestAnimationFrame(phase1);
+}
+
+/* ===================== CONTACT FORM ===================== */
+document.getElementById('contact-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('form-submit-btn');
+  const status = document.getElementById('form-status');
+  btn.disabled = true;
+  btn.textContent = 'TRANSMITTING...';
+  status.className = 'form-status';
+  status.textContent = '';
+  try {
+    const res = await fetch('https://formspree.io/f/mkoqvbgn', {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: new FormData(this)
+    });
+    if (res.ok) {
+      status.textContent = '> TRANSMISSION RECEIVED. TALK SOON.';
+      status.className = 'form-status success';
+      this.reset();
+    } else {
+      throw new Error('Server error');
+    }
+  } catch(err) {
+    status.textContent = '> TRANSMISSION FAILED. TRY EMAIL INSTEAD.';
+    status.className = 'form-status error';
+  }
+  btn.disabled = false;
+  btn.textContent = 'TRANSMIT →';
+});
+
+/* ===================== INIT ===================== */
+async function initData() {
+  try {
+    const r = await fetch('/api/data');
+    const data = await r.json();
+    if (!data.error) applyData(data);
+    else applyData(loadData());
+  } catch {
+    applyData(loadData());
+  }
+}
+if (window.location.hostname === 'localhost') initData();
+else { const data = loadData(); applyData(data); }
+</script>
+</body>
+</html>
