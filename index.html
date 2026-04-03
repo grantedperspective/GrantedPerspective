@@ -764,13 +764,12 @@ let tvImagePool = [];
 let tvImageIndex = 0;
 
 function buildTVGrid(images) {
-  tvImagePool = [...images].sort(() => Math.random() - 0.5); // shuffle pool once
+  tvImagePool = [...images].sort(() => Math.random() - 0.5);
   tvImageIndex = 0;
 
   const grid = document.getElementById('tvGrid');
   grid.innerHTML = '';
 
-  // Fixed 16-unit grid — no images loaded yet
   for (let i = 0; i < 16; i++) {
     const unit = document.createElement('div');
     unit.className = 'tv-unit off';
@@ -786,7 +785,6 @@ function buildTVGrid(images) {
   scheduleTVCycles();
 }
 
-// Pull next image from pool, cycling infinitely
 function getNextTVImage() {
   if (!tvImagePool.length) return null;
   const src = tvImagePool[tvImageIndex % tvImagePool.length];
@@ -794,10 +792,8 @@ function getNextTVImage() {
   return src;
 }
 
-// Inject image into TV right before powering on
 function loadTVImage(unit, callback) {
   const screen = unit.querySelector('.tv-screen');
-  // Remove any existing img
   const old = screen.querySelector('img');
   if (old) old.remove();
 
@@ -807,7 +803,6 @@ function loadTVImage(unit, callback) {
   const img = document.createElement('img');
   img.alt = '';
   img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;border-radius:6px;opacity:0;transition:opacity 0.1s;';
-  // Insert before canvas
   screen.insertBefore(img, screen.querySelector('canvas'));
   img.onload = () => callback();
   img.onerror = () => callback();
@@ -866,7 +861,6 @@ function powerOffTV(unit) {
         canvas.style.opacity = '0';
         unit.classList.remove('on');
         unit.classList.add('off');
-        // Hide img so next power-on loads a fresh one
         const img = unit.querySelector('img');
         if (img) img.style.opacity = '0';
       }
@@ -911,20 +905,17 @@ function navigateTo(pageId) {
   const rows = Math.ceil(canvas.height / TILE);
   const totalTiles = cols * rows;
 
-  // Build tile list in random order for scatter effect
   const tiles = [];
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       tiles.push({ r, c });
     }
   }
-  // Shuffle
   for (let i = tiles.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
   }
 
-  // Phase 1: shatter out — tiles fill with purple-tinted black over ~400ms
   const phase1Duration = 380;
   const phase1Start = performance.now();
 
@@ -939,7 +930,6 @@ function navigateTo(pageId) {
       const { r, c } = tiles[i];
       const x = c * TILE;
       const y = r * TILE;
-      // Each tile slightly different shade for texture
       const shade = Math.floor(Math.random() * 20);
       const purple = Math.floor(Math.random() * 40);
       ctx.fillStyle = `rgb(${shade}, ${shade >> 1}, ${shade + purple})`;
@@ -949,23 +939,19 @@ function navigateTo(pageId) {
     if (progress < 1) {
       requestAnimationFrame(phase1);
     } else {
-      // Swap pages
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('page-' + pageId).classList.add('active');
       window.scrollTo(0, 0);
       currentPage = pageId;
 
-      // Update nav active state
       document.querySelectorAll('.nav-links a').forEach(a => {
         a.classList.toggle('active', a.dataset.page === pageId);
       });
 
-      // Brief hold, then phase 2
       setTimeout(() => requestAnimationFrame(phase2), 60);
     }
   }
 
-  // Phase 2: reform — tiles clear in random order over ~380ms
   const phase2Duration = 380;
   let phase2Start = null;
 
@@ -1032,8 +1018,18 @@ document.getElementById('contact-form').addEventListener('submit', async functio
 });
 
 /* ===================== INIT ===================== */
-const data = loadData();
-applyData(data);
+async function initData() {
+  try {
+    const r = await fetch('/api/data');
+    const data = await r.json();
+    if (!data.error) applyData(data);
+    else applyData(loadData());
+  } catch {
+    applyData(loadData());
+  }
+}
+if (window.location.hostname === 'localhost') initData();
+else { const data = loadData(); applyData(data); }
 </script>
 </body>
 </html>
