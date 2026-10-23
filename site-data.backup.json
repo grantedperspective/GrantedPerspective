@@ -1,0 +1,370 @@
+{
+  "aboutBio": [
+    "I'm **Grant Hughes** — a broadcast production student at Northwest Missouri State University balancing technical storytelling, live sports production, and independent content creation. Expected graduation Spring 2027.",
+    "At **Catvision — NWMSU Athletics**, I operate broadcast cameras for NCAA Division II football, basketball, soccer, volleyball, and baseball. I serve as the **High Wide camera for Bearcat Football**, delivering the primary field-wide program angle under live director instruction — including off-campus at Children's Mercy Soccer Stadium.",
+    "I produce **Hidden Variables** segments for KNWT TV — 3-minute technical pieces translating complex gaming systems into accessible visual narratives, managed from concept through final export in Adobe Creative Suite.",
+    "I also develop social media content for **Digging Deeper** to extend broadcast reach.",
+    "I've taken my camera everywhere — race tracks, coastlines, airport tarmacs, and everywhere in between."
+  ],
+  "contactBlurb": "Broadcast production student seeking opportunities in media. Available for freelance video, photography, and broadcast work.",
+  "contactEmail": "grantedperspective@gmail.com",
+  "contactInstagram": "https://www.instagram.com/grantedperspective/",
+  "contactLinkedin": "https://www.linkedin.com/in/grant-hughes-media/",
+  "contactYoutube": "https://www.youtube.com/@grantedperspective",
+  "heroImages": [
+    "./img/Image00001.JPG",
+    "./img/Image00002.JPG",
+    "./img/Image00003.JPG",
+    "./img/Image00004.JPG",
+    "./img/Image00005.JPG",
+    "./img/Image00006.JPG",
+    "./img/Image00007.JPG",
+    "./img/Image00008.JPG",
+    "./img/Image00009.JPG",
+    "./img/Image00010.JPG",
+    "./img/Image00011.JPG",
+    "./img/Image00012.JPG",
+    "./img/Image00013.JPG",
+    "./img/Image00015.JPG",
+    "./img/Image00016.JPG",
+    "./img/Image00017.JPG",
+    "./img/Image00018.JPG",
+    "./img/Image00019.JPG",
+    "./img/Image00020.JPG",
+    "./img/Image00021.JPG",
+    "./img/Image00022.JPG",
+    "./img/Image00023.JPG",
+    "./img/Image00024.JPG",
+    "./img/Image00025.JPG",
+    "./img/IMG_0313.JPG",
+    "./img/IMG_0647.JPG",
+    "./img/IMG_0631.JPG",
+    "./img/IMG_0616.JPG",
+    "./img/IMG_0600.JPG",
+    "./img/IMG_0582.JPG",
+    "./img/IMG_0507.JPG",
+    "./img/IMG_0481.JPG",
+    "./img/IMG_0439.JPG",
+    "./img/IMG_0409.JPG",
+    "./img/IMG_0317.JPG",
+    "./img/IMG_0289.JPG",
+    "./img/IMG_0274.JPG",
+    "./img/IMG_0263.JPG",
+    "./img/IMG_0262.JPG",
+    "./img/IMG_9504.jpg",
+    "./img/IMG_9524_2.JPG",
+    "./img/IMG_9287_2.JPG",
+    "./img/IMG_8331.jpg"
+  ],
+  "heroSubtitle": "NORTHWEST MISSOURI STATE UNIVERSITY · KNWT Live Production Producer · Technical Director",
+  "heroTag": "// broadcaster · content creator · creative",
+  "resumeFile": "GrantHughesResume.pdf",
+  "skillAffil": "Catvision / NWMSU Athletics · KNWT Channel 8 · Northwest Missourian",
+  "skillLive": "Multi-camera directing · Live shot selection · Headset coordination · Scorebug integration · Lower thirds · Director timing",
+  "skillRole": "Camera Operator · Broadcast Producer · Video Editor · Photographer",
+  "skillSpec": "Sports broadcast · Short-form edit · Motion graphics · News packages",
+  "skillTools": "Adobe Creative Cloud · DaVinci Resolve · OBS Studio · NewBlue · Blackmagic Design · TriCaster",
+  "tabs": [
+    {
+      "dir": "video",
+      "files": [
+        {
+          "title": "Pulp Fiction - Scene Recreation",
+          "description": "Advanced Video Production Project",
+          "thumb": "https://img.youtube.com/vi/86D4JHC6q6Q/maxresdefault.jpg",
+          "link": "https://youtu.be/86D4JHC6q6Q",
+          "placeholder": false,
+          "placeholderTitle": "[ COMING SOON ]",
+          "placeholderMsg": "CONTENT COMING SOON."
+        },
+        {
+          "title": "TV Intro",
+          "description": "Television Directing Project",
+          "thumb": "https://img.youtube.com/vi/VhBV_S1tCOc/maxresdefault.jpg",
+          "link": "https://youtu.be/VhBV_S1tCOc",
+          "placeholder": false,
+          "placeholderTitle": "[ COMING SOON ]",
+          "placeholderMsg": "CONTENT COMING SOON."
+        },
+        {
+          "description": "Dean Snepp — Owner of three similar Mercury Cougars",
+          "link": "https://youtu.be/41iuG390s18?si=sVsbDnzQieertxcy",
+          "thumb": "https://img.youtube.com/vi/41iuG390s18/maxresdefault.jpg",
+          "title": "SLICE OF LIFE — MINI DOC"
+        },
+        {
+          "description": "12 min · First short film · School project",
+          "link": "https://youtu.be/LEAzeHEbfbM?si=dvI79buYHKGQbe3b",
+          "thumb": "https://img.youtube.com/vi/LEAzeHEbfbM/maxresdefault.jpg",
+          "title": "PLAYBACK — SHORT FILM"
+        }
+      ],
+      "id": "video",
+      "kind": "video",
+      "label": "VIDEO",
+      "subsections": [
+        {
+          "desc": "An episodic YouTube series breaking down the invisible systems inside games — matchmaking, algorithms, rendering, psychology. Every episode is written, shot, and edited solo.",
+          "files": [
+            {
+              "title": "HIDDEN VARIABLES EP.10",
+              "description": "How Did We Get Here? Seeds, Compression, and Haptics, oh my!",
+              "thumb": "https://img.youtube.com/vi/ezVy5tovzUw/maxresdefault.jpg",
+              "link": "https://youtu.be/ezVy5tovzUw",
+              "placeholder": false,
+              "placeholderTitle": "[ COMING SOON ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            },
+            {
+              "title": "HIDDEN VARIABLES EP.9",
+              "description": "What's running inside every NPC - FSM and Behavior Trees",
+              "thumb": "https://img.youtube.com/vi/H8yAa052SMU/maxresdefault.jpg",
+              "link": "https://youtu.be/H8yAa052SMU",
+              "placeholder": false,
+              "placeholderTitle": "[ COMING SOON ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            },
+            {
+              "description": "3D Spatial Audio & HRTF",
+              "link": "https://youtu.be/hMPcrGrFWF0",
+              "placeholder": false,
+              "placeholderMsg": "THIS EPISODE IS CURRENTLY IN PRODUCTION.\nCHECK BACK SOON.",
+              "placeholderTitle": "[ IN PRODUCTION ]",
+              "thumb": "https://img.youtube.com/vi/hMPcrGrFWF0/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.8"
+            },
+            {
+              "description": "Lost Episode",
+              "link": "",
+              "placeholder": true,
+              "placeholderMsg": "THIS EPISODE WAS SCRAPPED.",
+              "placeholderTitle": "[ SCRAPPED ]",
+              "thumb": "",
+              "title": "HIDDEN VARIABLES EP.7"
+            },
+            {
+              "description": "The System That Keeps You Playing — MMR, Elo & EOMM",
+              "link": "https://youtu.be/PCQXAdyyFfU",
+              "placeholder": false,
+              "thumb": "https://img.youtube.com/vi/PCQXAdyyFfU/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.6"
+            },
+            {
+              "description": "The World Behind Your Back — Frustum Culling, Occlusion & LOD",
+              "link": "https://youtu.be/72q7EUGhypM",
+              "placeholder": false,
+              "thumb": "https://img.youtube.com/vi/72q7EUGhypM/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.5"
+            },
+            {
+              "description": "Why Battle Passes Feel Hard to Ignore — Goal-Gradient, Loss Aversion & Sunk Cost",
+              "link": "https://youtu.be/C0moU5GKMvo?si=aJQc3sJySB1CXiTO",
+              "thumb": "https://img.youtube.com/vi/C0moU5GKMvo/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.4"
+            },
+            {
+              "description": "YouTube's Secret File on You — Clusters, Collaborative Filtering & Prediction",
+              "link": "https://youtu.be/VM68CZKuAgI?si=DkQKeXkFl7G80CFn",
+              "thumb": "https://img.youtube.com/vi/VM68CZKuAgI/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.3"
+            },
+            {
+              "description": "How Speedrunners Break Games — TAS, Glitches, Routing & RNG",
+              "link": "https://youtu.be/nEr4Iz_sNq8?si=JAjzQRqd5GYCMCru",
+              "thumb": "https://img.youtube.com/vi/nEr4Iz_sNq8/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.2"
+            },
+            {
+              "description": "Latency Isn't Just Ping — End-to-End Latency & Peeker's Advantage",
+              "link": "https://youtu.be/Nv-v-loUx-I",
+              "placeholder": false,
+              "thumb": "https://img.youtube.com/vi/Nv-v-loUx-I/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.1"
+            }
+          ],
+          "id": "hv",
+          "title": "HIDDEN VARIABLES"
+        },
+        {
+          "desc": "Student news show produced in partnership with the Northwest Missourian. I handle social media production — short-form content, reels, and segment clips for KNWT's platforms.",
+          "files": [
+            {
+              "description": "Social media content · KNWT Instagram",
+              "link": "https://www.instagram.com/reel/DUoPzLEkYet/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+              "thumb": "",
+              "title": "DIGGING DEEPER — REEL #1"
+            },
+            {
+              "description": "Social media content · KNWT Instagram",
+              "link": "https://www.instagram.com/reel/DU1ZqZGDSEu/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+              "thumb": "",
+              "title": "DIGGING DEEPER — REEL #2"
+            },
+            {
+              "description": "Social media content · KNWT Instagram",
+              "link": "https://www.instagram.com/reel/DVJiV6uCd18/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+              "thumb": "",
+              "title": "DIGGING DEEPER — REEL #3"
+            },
+            {
+              "description": "Social media content · KNWT Instagram",
+              "link": "https://www.instagram.com/reel/DWY4eEahI-n/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+              "thumb": "",
+              "title": "DIGGING DEEPER — REEL #4"
+            },
+            {
+              "description": "Social media content · KNWT Instagram",
+              "link": "https://www.instagram.com/reel/DWgxbmpkdNS/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+              "thumb": "",
+              "title": "DIGGING DEEPER — REEL #5"
+            },
+            {
+              "title": "DIGGING DEEPER — REEL #6",
+              "description": "Social media content · KNWT Instagram",
+              "thumb": "",
+              "link": "https://www.instagram.com/reel/DWyxWoskduC/?utm_source=ig_web_copy_link&mdxt=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==",
+              "placeholder": false,
+              "placeholderTitle": "[ COMING SOON ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            },
+            {
+              "title": "DIGGING DEEPER — REEL #7",
+              "description": "Social media content · KNWT Instagram",
+              "thumb": "",
+              "link": "https://www.instagram.com/reel/DXFAURmkbh1/?utm_source=ig_web_copy_link&cplk=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==",
+              "placeholder": false,
+              "placeholderTitle": "[ COMING SOON ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            },
+            {
+              "title": "DIGGING DEEPER — REEL #8",
+              "description": "Social media content · KNWT Instagram",
+              "thumb": "",
+              "link": "https://www.instagram.com/reel/DXcB-H-ERDT/?utm_source=ig_web_copy_link&obrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==",
+              "placeholder": false,
+              "placeholderTitle": "[ COMING SOON ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            }
+          ],
+          "id": "dd",
+          "title": "DIGGING DEEPER"
+        }
+      ]
+    },
+    {
+      "dir": "photo",
+      "files": [
+        {
+          "description": "Race cars, road cars, track days",
+          "link": "",
+          "placeholder": true,
+          "placeholderMsg": "GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.",
+          "placeholderTitle": "[ COMING SOON ]",
+          "thumb": "",
+          "title": "MOTORSPORT — TRACK & ROAD"
+        },
+        {
+          "description": "Travel photography",
+          "link": "",
+          "placeholder": true,
+          "placeholderMsg": "GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.",
+          "placeholderTitle": "[ COMING SOON ]",
+          "thumb": "",
+          "title": "I'VE BEEN EVERYWHERE"
+        },
+        {
+          "description": "Maritime & waterfront photography",
+          "link": "",
+          "placeholder": true,
+          "placeholderMsg": "GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.",
+          "placeholderTitle": "[ COMING SOON ]",
+          "thumb": "",
+          "title": "COASTAL VIEWS"
+        },
+        {
+          "description": "Airport & tarmac photography",
+          "link": "",
+          "placeholder": true,
+          "placeholderMsg": "GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.",
+          "placeholderTitle": "[ COMING SOON ]",
+          "thumb": "",
+          "title": "PLANE SPOTTING — DEC 2025"
+        },
+        {
+          "description": "Jun 2025 · Portrait & lifestyle",
+          "link": "",
+          "placeholder": true,
+          "placeholderMsg": "GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.",
+          "placeholderTitle": "[ COMING SOON ]",
+          "thumb": "",
+          "title": "E&K — ENGAGEMENT SESSION"
+        }
+      ],
+      "id": "photo",
+      "kind": "photo",
+      "label": "PHOTO",
+      "subsections": []
+    },
+    {
+      "dir": "broadcast",
+      "files": [
+        {
+          "title": "KNWT Quiz Corner",
+          "description": "Live-to-tape production of a popular game show!",
+          "thumb": "https://img.youtube.com/vi/Y9w-pNKvg8k/maxresdefault.jpg",
+          "link": "https://youtu.be/Y9w-pNKvg8k",
+          "placeholder": false,
+          "placeholderTitle": "[ COMING SOON ]",
+          "placeholderMsg": "CONTENT COMING SOON."
+        },
+        {
+          "description": "Mobile production site survey · Remote/live production concept",
+          "link": "./BeardownhillPitch.pdf",
+          "placeholder": false,
+          "tag": "pitch",
+          "thumb": "",
+          "title": "BEARCAT DOWNHILL 200 — PITCH"
+        },
+        {
+          "description": "Technical Director · High Wide angle · NCAA Div II ",
+          "link": "https://youtu.be/2ZUMgu1BYJs",
+          "placeholder": false,
+          "placeholderMsg": "BROADCAST FOOTAGE IS ARCHIVED INTERNALLY.\nCONTACT FOR REEL ACCESS.",
+          "placeholderTitle": "[ BROADCAST ARCHIVE ]",
+          "thumb": "https://img.youtube.com/vi/2ZUMgu1BYJs/maxresdefault.jpg",
+          "title": "CATVISION — BEARCAT FOOTBALL"
+        }
+      ],
+      "id": "broadcast",
+      "kind": "broadcast",
+      "label": "BROADCAST",
+      "subsections": [
+        {
+          "id": "sec1",
+          "title": "LIVE PRODUCTION PRODUCER",
+          "desc": "Live Productions made by myself for KNWT TV.",
+          "files": [
+            {
+              "title": "KNWT Homecoming Parade",
+              "description": "Live Streamed Homecoming Coverage",
+              "thumb": "",
+              "link": "",
+              "placeholder": true,
+              "placeholderTitle": "[ IN PROGRESS ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            },
+            {
+              "title": "KNWT Quiz Corner",
+              "description": "First Live Production",
+              "thumb": "https://img.youtube.com/vi/Y9w-pNKvg8k/maxresdefault.jpg",
+              "link": "https://youtu.be/Y9w-pNKvg8k",
+              "placeholder": false,
+              "placeholderTitle": "[ COMING SOON ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

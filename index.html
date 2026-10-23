@@ -210,7 +210,7 @@
   .file-info { padding: 0.6rem; }
   .file-name { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--purple); letter-spacing: 1px; margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .file-meta { font-size: 0.55rem; color: #666; letter-spacing: 1px; }
-  .file-tag { position: absolute; top: 6px; right: 6px; font-family: 'Share Tech Mono', monospace; font-size: 0.5rem; letter-spacing: 1px; padding: 2px 6px; text-transform: uppercase; }
+  .file-tag { position: absolute; top: 6px; right: 6px; font-family: 'Share Tech Mono', monospace; font-size: 0.5rem; letter-spacing: 1px; padding: 2px 6px; text-transform: uppercase; background: #1a0033; color: #9b59b6; }
   .file-tag.photo { background: #360066; color: var(--purple); }
   .file-tag.video { background: #1a0033; color: #9b59b6; }
   .file-tag.broadcast { background: #0a0020; color: #7a4ab8; }
@@ -258,6 +258,11 @@
   ::-webkit-scrollbar-track { background: #000; }
   ::-webkit-scrollbar-thumb { background: var(--purple-dark); }
 
+  /* EDITOR PREVIEW MODE (only active inside the local editor's iframe) */
+  .edit-mode [data-edit] { cursor: pointer; }
+  .edit-mode [data-edit]:hover { outline: 1px dashed var(--crt-green); outline-offset: 3px; }
+  .edit-mode .hero-overlay [data-edit] { pointer-events: auto; }
+
   @media (max-width: 768px) {
     .tv-grid { grid-template-columns: repeat(2, 1fr); }
     .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
@@ -288,11 +293,11 @@
 <!-- HOME PAGE -->
 <div class="page active" id="page-home">
   <div style="position:relative; min-height:100vh;">
-    <div class="tv-grid" id="tvGrid"></div>
+    <div class="tv-grid" id="tvGrid" data-edit="hero"></div>
     <div class="hero-overlay">
-      <p class="hero-tag" id="hero-tag">// broadcaster · content creator · photographer</p>
+      <p class="hero-tag" id="hero-tag" data-edit="field:heroTag">// broadcaster · content creator · photographer</p>
       <h1 class="hero-name" id="hero-name" data-text="GRANT HUGHES">GRANT<br><span>HUGHES</span></h1>
-      <p class="hero-subtitle" id="hero-subtitle">NORTHWEST MISSOURI STATE UNIVERSITY · KNWT · HIDDEN VARIABLES · DIGGING DEEPER</p>
+      <p class="hero-subtitle" id="hero-subtitle" data-edit="field:heroSubtitle">NORTHWEST MISSOURI STATE UNIVERSITY · KNWT · HIDDEN VARIABLES · DIGGING DEEPER</p>
       <div class="hero-scroll"><a onclick="navigateTo('projects')">ENTER ›</a></div>
     </div>
   </div>
@@ -305,12 +310,8 @@
     <h2 class="section-title">WHO I AM</h2>
     <div class="about-grid">
       <div class="about-bio" id="about-bio-text">
-        <p>I'm <strong>Grant Hughes</strong> — a broadcast production student at Northwest Missouri State University balancing technical storytelling, live sports production, and independent content creation. Expected graduation Spring 2027.</p>
-        <p>At <strong>Catvision — NWMSU Athletics</strong>, I operate broadcast cameras for NCAA Division II football, basketball, soccer, volleyball, and baseball. I serve as the <strong>High Wide camera for Bearcat Football</strong>, delivering the primary field-wide program angle under live director instruction — including off-campus at Children's Mercy Soccer Stadium.</p>
-        <p>I produce <strong>Hidden Variables</strong> segments for KNWT TV — 3-minute technical pieces translating complex gaming systems into accessible visual narratives, managed from concept through final export in Adobe Creative Suite.</p>
-        <p>I also develop social media content for <strong>Digging Deeper</strong> to extend broadcast reach.</p>
-        <p>I've taken my camera everywhere — race tracks, coastlines, airport tarmacs, and everywhere in between.</p>
-        <a class="resume-btn" id="resume-link" href="./GrantHughesResume.pdf" download="GrantHughesResume.pdf">
+        <div id="bio-paras"></div>
+        <a class="resume-btn" id="resume-link" href="./GrantHughesResume.pdf" download="GrantHughesResume.pdf" data-edit="field:resumeFile">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M4 7l4 4 4-4M2 13h12"/></svg>
           Download Resume
         </a>
@@ -318,23 +319,23 @@
       <div class="about-skills">
         <div class="skill-item">
           <p class="skill-label">ROLE</p>
-          <p class="skill-value" id="skill-role">Camera Operator · Broadcast Producer · Video Editor · Photographer</p>
+          <p class="skill-value" id="skill-role" data-edit="field:skillRole">Camera Operator · Broadcast Producer · Video Editor · Photographer</p>
         </div>
         <div class="skill-item">
           <p class="skill-label">AFFILIATION</p>
-          <p class="skill-value" id="skill-affil">Catvision / NWMSU Athletics · KNWT Channel 8 · Northwest Missourian</p>
+          <p class="skill-value" id="skill-affil" data-edit="field:skillAffil">Catvision / NWMSU Athletics · KNWT Channel 8 · Northwest Missourian</p>
         </div>
         <div class="skill-item">
           <p class="skill-label">SOFTWARE</p>
-          <p class="skill-value" id="skill-tools">Adobe Creative Cloud · DaVinci Resolve · OBS Studio · NewBlue · Blackmagic Design · TriCaster</p>
+          <p class="skill-value" id="skill-tools" data-edit="field:skillTools">Adobe Creative Cloud · DaVinci Resolve · OBS Studio · NewBlue · Blackmagic Design · TriCaster</p>
         </div>
         <div class="skill-item">
           <p class="skill-label">LIVE PRODUCTION</p>
-          <p class="skill-value" id="skill-live">Multi-camera directing · Live shot selection · Headset coordination · Scorebug integration · Lower thirds · Director timing</p>
+          <p class="skill-value" id="skill-live" data-edit="field:skillLive">Multi-camera directing · Live shot selection · Headset coordination · Scorebug integration · Lower thirds · Director timing</p>
         </div>
         <div class="skill-item">
           <p class="skill-label">SPECIALTIES</p>
-          <p class="skill-value" id="skill-spec">Sports broadcast · Short-form edit · Motion graphics · News packages</p>
+          <p class="skill-value" id="skill-spec" data-edit="field:skillSpec">Sports broadcast · Short-form edit · Motion graphics · News packages</p>
         </div>
       </div>
     </div>
@@ -354,39 +355,8 @@
       </div>
       <div class="terminal-inner">
         <p class="terminal-prompt">> WELCOME, USER. SELECT ARCHIVE CATEGORY TO ACCESS FILES.</p>
-        <div class="terminal-tabs">
-          <button class="tab-btn active" onclick="switchTab('video')">[ VIDEO ]</button>
-          <button class="tab-btn" onclick="switchTab('photo')">[ PHOTO ]</button>
-          <button class="tab-btn" onclick="switchTab('broadcast')">[ BROADCAST ]</button>
-        </div>
-        <div class="tab-content active" id="tab-video">
-          <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/video — <span id="video-count">0</span> FILES FOUND</p>
-          <div class="file-grid" id="grid-video"></div>
-
-          <div class="subsection">
-            <div class="subsection-header">
-              <p class="subsection-title">HIDDEN <span>VARIABLES</span></p>
-              <p class="subsection-desc">An episodic YouTube series breaking down the invisible systems inside games — matchmaking, algorithms, rendering, psychology. Every episode is written, shot, and edited solo.</p>
-            </div>
-            <div class="file-grid" id="grid-hv"></div>
-          </div>
-
-          <div class="subsection">
-            <div class="subsection-header">
-              <p class="subsection-title">DIGGING <span>DEEPER</span></p>
-              <p class="subsection-desc">Student news show produced in partnership with the Northwest Missourian. I handle social media production — short-form content, reels, and segment clips for KNWT's platforms.</p>
-            </div>
-            <div class="file-grid" id="grid-dd"></div>
-          </div>
-        </div>
-        <div class="tab-content" id="tab-photo">
-          <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/photo — <span id="photo-count">0</span> FILES FOUND</p>
-          <div class="file-grid" id="grid-photo"></div>
-        </div>
-        <div class="tab-content" id="tab-broadcast">
-          <p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/broadcast — <span id="broadcast-count">0</span> FILES FOUND</p>
-          <div class="file-grid" id="grid-broadcast"></div>
-        </div>
+        <div class="terminal-tabs" id="terminal-tabs"></div>
+        <div id="tab-container"></div>
       </div>
     </div>
   </div>
@@ -399,12 +369,12 @@
     <h2 class="section-title">GET IN TOUCH</h2>
     <div class="contact-grid">
       <div>
-        <p class="contact-blurb" id="contact-blurb">Broadcast production student seeking opportunities in media. Available for freelance video, photography, and broadcast work.</p>
+        <p class="contact-blurb" id="contact-blurb" data-edit="field:contactBlurb">Broadcast production student seeking opportunities in media. Available for freelance video, photography, and broadcast work.</p>
         <div class="contact-links">
-          <a class="contact-link" id="contact-email" href="mailto:grantedperspective@gmail.com"><span class="link-label">grantedperspective@gmail.com</span><span>→</span></a>
-          <a class="contact-link" id="contact-youtube" href="https://www.youtube.com/@grantedperspective" target="_blank"><span class="link-label">YouTube — @grantedperspective</span><span>→</span></a>
-          <a class="contact-link" id="contact-instagram" href="https://www.instagram.com/grantedperspective/" target="_blank"><span class="link-label">Instagram — @grantedperspective</span><span>→</span></a>
-          <a class="contact-link" id="contact-linkedin" href="https://www.linkedin.com/in/grant-hughes-media/" target="_blank"><span class="link-label">LinkedIn — Grant Hughes</span><span>→</span></a>
+          <a class="contact-link" id="contact-email" href="mailto:grantedperspective@gmail.com" data-edit="field:contactEmail"><span class="link-label">grantedperspective@gmail.com</span><span>→</span></a>
+          <a class="contact-link" id="contact-youtube" href="https://www.youtube.com/@grantedperspective" target="_blank" rel="noopener" data-edit="field:contactYoutube"><span class="link-label">YouTube — @grantedperspective</span><span>→</span></a>
+          <a class="contact-link" id="contact-instagram" href="https://www.instagram.com/grantedperspective/" target="_blank" rel="noopener" data-edit="field:contactInstagram"><span class="link-label">Instagram — @grantedperspective</span><span>→</span></a>
+          <a class="contact-link" id="contact-linkedin" href="https://www.linkedin.com/in/grant-hughes-media/" target="_blank" rel="noopener" data-edit="field:contactLinkedin"><span class="link-label">LinkedIn — Grant Hughes</span><span>→</span></a>
         </div>
       </div>
       <form class="contact-form" id="contact-form">
@@ -424,298 +394,494 @@
 
 <script>
 /* ===================== DATA ===================== */
-const STORAGE_KEY = 'gp_site_data';
-
-const defaultData = {
-  heroTag: '// broadcaster · content creator · photographer',
-  heroSubtitle: 'NORTHWEST MISSOURI STATE UNIVERSITY · KNWT · HIDDEN VARIABLES · DIGGING DEEPER',
-  contactBlurb: 'Broadcast production student seeking opportunities in media. Available for freelance video, photography, and broadcast work.',
-  contactEmail: 'grantedperspective@gmail.com',
-  contactYoutube: 'https://www.youtube.com/@grantedperspective',
-  contactInstagram: 'https://www.instagram.com/grantedperspective/',
-  contactLinkedin: 'https://www.linkedin.com/in/grant-hughes-media/',
-  skillRole: 'Camera Operator · Broadcast Producer · Video Editor · Photographer',
-  skillAffil: 'Catvision / NWMSU Athletics · KNWT Channel 8 · Northwest Missourian',
-  skillTools: 'Adobe Creative Cloud · DaVinci Resolve · OBS Studio · NewBlue · Blackmagic Design · TriCaster',
-  skillLive: 'Multi-camera directing · Live shot selection · Headset coordination · Scorebug integration · Lower thirds · Director timing',
-  skillSpec: 'Sports broadcast · Short-form edit · Motion graphics · News packages',
-  resumeFile: 'GrantHughesResume.pdf',
-  heroImages: [
-    './img/Image00001.JPG','./img/Image00002.JPG','./img/Image00003.JPG',
-    './img/Image00004.JPG','./img/Image00005.JPG','./img/Image00006.JPG',
-    './img/Image00007.JPG','./img/Image00008.JPG','./img/Image00009.JPG',
-    './img/Image00010.JPG','./img/Image00011.JPG','./img/Image00012.JPG',
-    './img/Image00013.JPG','./img/Image00015.JPG','./img/Image00016.JPG',
-    './img/Image00017.JPG','./img/Image00018.JPG','./img/Image00019.JPG',
-    './img/Image00020.JPG','./img/Image00021.JPG','./img/Image00022.JPG',
-    './img/Image00023.JPG','./img/Image00024.JPG','./img/Image00025.JPG'
+/* The block between the DATA markers is rewritten by build.py / the editor's PUBLISH button.
+   Edit content through the editor (python editor.py), not by hand. */
+const defaultData = /*DATA_START*/{
+  "aboutBio": [
+    "I'm **Grant Hughes** — a broadcast production student at Northwest Missouri State University balancing technical storytelling, live sports production, and independent content creation. Expected graduation Spring 2027.",
+    "At **Catvision — NWMSU Athletics**, I operate broadcast cameras for NCAA Division II football, basketball, soccer, volleyball, and baseball. I serve as the **High Wide camera for Bearcat Football**, delivering the primary field-wide program angle under live director instruction — including off-campus at Children's Mercy Soccer Stadium.",
+    "I produce **Hidden Variables** segments for KNWT TV — 3-minute technical pieces translating complex gaming systems into accessible visual narratives, managed from concept through final export in Adobe Creative Suite.",
+    "I also develop social media content for **Digging Deeper** to extend broadcast reach.",
+    "I've taken my camera everywhere — race tracks, coastlines, airport tarmacs, and everywhere in between."
   ],
-  videoFiles: [
-    {
-      title: 'SLICE OF LIFE — MINI DOC',
-      description: 'Dean Snepp — Owner of three similar Mercury Cougars',
-      thumb: 'https://img.youtube.com/vi/41iuG390s18/maxresdefault.jpg',
-      link: 'https://youtu.be/41iuG390s18?si=sVsbDnzQieertxcy'
-    },
-    {
-      title: 'PLAYBACK — SHORT FILM',
-      description: '12 min · First short film · School project',
-      thumb: 'https://img.youtube.com/vi/LEAzeHEbfbM/maxresdefault.jpg',
-      link: 'https://youtu.be/LEAzeHEbfbM?si=dvI79buYHKGQbe3b'
-    }
+  "contactBlurb": "Broadcast production student seeking opportunities in media. Available for freelance video, photography, and broadcast work.",
+  "contactEmail": "grantedperspective@gmail.com",
+  "contactInstagram": "https://www.instagram.com/grantedperspective/",
+  "contactLinkedin": "https://www.linkedin.com/in/grant-hughes-media/",
+  "contactYoutube": "https://www.youtube.com/@grantedperspective",
+  "heroImages": [
+    "./img/Image00001.JPG",
+    "./img/Image00002.JPG",
+    "./img/Image00003.JPG",
+    "./img/Image00004.JPG",
+    "./img/Image00005.JPG",
+    "./img/Image00006.JPG",
+    "./img/Image00007.JPG",
+    "./img/Image00008.JPG",
+    "./img/Image00009.JPG",
+    "./img/Image00010.JPG",
+    "./img/Image00011.JPG",
+    "./img/Image00012.JPG",
+    "./img/Image00013.JPG",
+    "./img/Image00015.JPG",
+    "./img/Image00016.JPG",
+    "./img/Image00017.JPG",
+    "./img/Image00018.JPG",
+    "./img/Image00019.JPG",
+    "./img/Image00020.JPG",
+    "./img/Image00021.JPG",
+    "./img/Image00022.JPG",
+    "./img/Image00023.JPG",
+    "./img/Image00024.JPG",
+    "./img/Image00025.JPG",
+    "./img/IMG_0313.JPG",
+    "./img/IMG_0647.JPG",
+    "./img/IMG_0631.JPG",
+    "./img/IMG_0616.JPG",
+    "./img/IMG_0600.JPG",
+    "./img/IMG_0582.JPG",
+    "./img/IMG_0507.JPG",
+    "./img/IMG_0481.JPG",
+    "./img/IMG_0439.JPG",
+    "./img/IMG_0409.JPG",
+    "./img/IMG_0317.JPG",
+    "./img/IMG_0289.JPG",
+    "./img/IMG_0274.JPG",
+    "./img/IMG_0263.JPG",
+    "./img/IMG_0262.JPG",
+    "./img/IMG_9504.jpg",
+    "./img/IMG_9524_2.JPG",
+    "./img/IMG_9287_2.JPG",
+    "./img/IMG_8331.jpg"
   ],
-  hvFiles: [
+  "heroSubtitle": "NORTHWEST MISSOURI STATE UNIVERSITY · KNWT Live Production Producer · Technical Director",
+  "heroTag": "// broadcaster · content creator · creative",
+  "resumeFile": "GrantHughesResume.pdf",
+  "skillAffil": "Catvision / NWMSU Athletics · KNWT Channel 8 · Northwest Missourian",
+  "skillLive": "Multi-camera directing · Live shot selection · Headset coordination · Scorebug integration · Lower thirds · Director timing",
+  "skillRole": "Camera Operator · Broadcast Producer · Video Editor · Photographer",
+  "skillSpec": "Sports broadcast · Short-form edit · Motion graphics · News packages",
+  "skillTools": "Adobe Creative Cloud · DaVinci Resolve · OBS Studio · NewBlue · Blackmagic Design · TriCaster",
+  "tabs": [
     {
-      title: 'HIDDEN VARIABLES EP.8',
-      description: '3D Spatial Audio & HRTF',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ IN PRODUCTION ]',
-      placeholderMsg: 'THIS EPISODE IS CURRENTLY IN PRODUCTION.\nCHECK BACK SOON.'
+      "dir": "video",
+      "files": [
+        {
+          "title": "Pulp Fiction - Scene Recreation",
+          "description": "Advanced Video Production Project",
+          "thumb": "https://img.youtube.com/vi/86D4JHC6q6Q/maxresdefault.jpg",
+          "link": "https://youtu.be/86D4JHC6q6Q",
+          "placeholder": false,
+          "placeholderTitle": "[ COMING SOON ]",
+          "placeholderMsg": "CONTENT COMING SOON."
+        },
+        {
+          "title": "TV Intro",
+          "description": "Television Directing Project",
+          "thumb": "https://img.youtube.com/vi/VhBV_S1tCOc/maxresdefault.jpg",
+          "link": "https://youtu.be/VhBV_S1tCOc",
+          "placeholder": false,
+          "placeholderTitle": "[ COMING SOON ]",
+          "placeholderMsg": "CONTENT COMING SOON."
+        },
+        {
+          "description": "Dean Snepp — Owner of three similar Mercury Cougars",
+          "link": "https://youtu.be/41iuG390s18?si=sVsbDnzQieertxcy",
+          "thumb": "https://img.youtube.com/vi/41iuG390s18/maxresdefault.jpg",
+          "title": "SLICE OF LIFE — MINI DOC"
+        },
+        {
+          "description": "12 min · First short film · School project",
+          "link": "https://youtu.be/LEAzeHEbfbM?si=dvI79buYHKGQbe3b",
+          "thumb": "https://img.youtube.com/vi/LEAzeHEbfbM/maxresdefault.jpg",
+          "title": "PLAYBACK — SHORT FILM"
+        }
+      ],
+      "id": "video",
+      "kind": "video",
+      "label": "VIDEO",
+      "subsections": [
+        {
+          "desc": "An episodic YouTube series breaking down the invisible systems inside games — matchmaking, algorithms, rendering, psychology. Every episode is written, shot, and edited solo.",
+          "files": [
+            {
+              "title": "HIDDEN VARIABLES EP.10",
+              "description": "How Did We Get Here? Seeds, Compression, and Haptics, oh my!",
+              "thumb": "https://img.youtube.com/vi/ezVy5tovzUw/maxresdefault.jpg",
+              "link": "https://youtu.be/ezVy5tovzUw",
+              "placeholder": false,
+              "placeholderTitle": "[ COMING SOON ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            },
+            {
+              "title": "HIDDEN VARIABLES EP.9",
+              "description": "What's running inside every NPC - FSM and Behavior Trees",
+              "thumb": "https://img.youtube.com/vi/H8yAa052SMU/maxresdefault.jpg",
+              "link": "https://youtu.be/H8yAa052SMU",
+              "placeholder": false,
+              "placeholderTitle": "[ COMING SOON ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            },
+            {
+              "description": "3D Spatial Audio & HRTF",
+              "link": "https://youtu.be/hMPcrGrFWF0",
+              "placeholder": false,
+              "placeholderMsg": "THIS EPISODE IS CURRENTLY IN PRODUCTION.\nCHECK BACK SOON.",
+              "placeholderTitle": "[ IN PRODUCTION ]",
+              "thumb": "https://img.youtube.com/vi/hMPcrGrFWF0/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.8"
+            },
+            {
+              "description": "Lost Episode",
+              "link": "",
+              "placeholder": true,
+              "placeholderMsg": "THIS EPISODE WAS SCRAPPED.",
+              "placeholderTitle": "[ SCRAPPED ]",
+              "thumb": "",
+              "title": "HIDDEN VARIABLES EP.7"
+            },
+            {
+              "description": "The System That Keeps You Playing — MMR, Elo & EOMM",
+              "link": "https://youtu.be/PCQXAdyyFfU",
+              "placeholder": false,
+              "thumb": "https://img.youtube.com/vi/PCQXAdyyFfU/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.6"
+            },
+            {
+              "description": "The World Behind Your Back — Frustum Culling, Occlusion & LOD",
+              "link": "https://youtu.be/72q7EUGhypM",
+              "placeholder": false,
+              "thumb": "https://img.youtube.com/vi/72q7EUGhypM/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.5"
+            },
+            {
+              "description": "Why Battle Passes Feel Hard to Ignore — Goal-Gradient, Loss Aversion & Sunk Cost",
+              "link": "https://youtu.be/C0moU5GKMvo?si=aJQc3sJySB1CXiTO",
+              "thumb": "https://img.youtube.com/vi/C0moU5GKMvo/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.4"
+            },
+            {
+              "description": "YouTube's Secret File on You — Clusters, Collaborative Filtering & Prediction",
+              "link": "https://youtu.be/VM68CZKuAgI?si=DkQKeXkFl7G80CFn",
+              "thumb": "https://img.youtube.com/vi/VM68CZKuAgI/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.3"
+            },
+            {
+              "description": "How Speedrunners Break Games — TAS, Glitches, Routing & RNG",
+              "link": "https://youtu.be/nEr4Iz_sNq8?si=JAjzQRqd5GYCMCru",
+              "thumb": "https://img.youtube.com/vi/nEr4Iz_sNq8/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.2"
+            },
+            {
+              "description": "Latency Isn't Just Ping — End-to-End Latency & Peeker's Advantage",
+              "link": "https://youtu.be/Nv-v-loUx-I",
+              "placeholder": false,
+              "thumb": "https://img.youtube.com/vi/Nv-v-loUx-I/maxresdefault.jpg",
+              "title": "HIDDEN VARIABLES EP.1"
+            }
+          ],
+          "id": "hv",
+          "title": "HIDDEN VARIABLES"
+        },
+        {
+          "desc": "Student news show produced in partnership with the Northwest Missourian. I handle social media production — short-form content, reels, and segment clips for KNWT's platforms.",
+          "files": [
+            {
+              "description": "Social media content · KNWT Instagram",
+              "link": "https://www.instagram.com/reel/DUoPzLEkYet/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+              "thumb": "",
+              "title": "DIGGING DEEPER — REEL #1"
+            },
+            {
+              "description": "Social media content · KNWT Instagram",
+              "link": "https://www.instagram.com/reel/DU1ZqZGDSEu/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+              "thumb": "",
+              "title": "DIGGING DEEPER — REEL #2"
+            },
+            {
+              "description": "Social media content · KNWT Instagram",
+              "link": "https://www.instagram.com/reel/DVJiV6uCd18/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+              "thumb": "",
+              "title": "DIGGING DEEPER — REEL #3"
+            },
+            {
+              "description": "Social media content · KNWT Instagram",
+              "link": "https://www.instagram.com/reel/DWY4eEahI-n/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+              "thumb": "",
+              "title": "DIGGING DEEPER — REEL #4"
+            },
+            {
+              "description": "Social media content · KNWT Instagram",
+              "link": "https://www.instagram.com/reel/DWgxbmpkdNS/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+              "thumb": "",
+              "title": "DIGGING DEEPER — REEL #5"
+            },
+            {
+              "title": "DIGGING DEEPER — REEL #6",
+              "description": "Social media content · KNWT Instagram",
+              "thumb": "",
+              "link": "https://www.instagram.com/reel/DWyxWoskduC/?utm_source=ig_web_copy_link&mdxt=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==",
+              "placeholder": false,
+              "placeholderTitle": "[ COMING SOON ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            },
+            {
+              "title": "DIGGING DEEPER — REEL #7",
+              "description": "Social media content · KNWT Instagram",
+              "thumb": "",
+              "link": "https://www.instagram.com/reel/DXFAURmkbh1/?utm_source=ig_web_copy_link&cplk=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==",
+              "placeholder": false,
+              "placeholderTitle": "[ COMING SOON ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            },
+            {
+              "title": "DIGGING DEEPER — REEL #8",
+              "description": "Social media content · KNWT Instagram",
+              "thumb": "",
+              "link": "https://www.instagram.com/reel/DXcB-H-ERDT/?utm_source=ig_web_copy_link&obrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==",
+              "placeholder": false,
+              "placeholderTitle": "[ COMING SOON ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            }
+          ],
+          "id": "dd",
+          "title": "DIGGING DEEPER"
+        }
+      ]
     },
     {
-      title: 'HIDDEN VARIABLES EP.7',
-      description: 'PC Components & CPU-GPU Communication',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ SCRAPPED ]',
-      placeholderMsg: 'THIS EPISODE WAS SCRAPPED.\nEP.8 IS IN PRODUCTION.'
+      "dir": "photo",
+      "files": [
+        {
+          "description": "Race cars, road cars, track days",
+          "link": "",
+          "placeholder": true,
+          "placeholderMsg": "GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.",
+          "placeholderTitle": "[ COMING SOON ]",
+          "thumb": "",
+          "title": "MOTORSPORT — TRACK & ROAD"
+        },
+        {
+          "description": "Travel photography",
+          "link": "",
+          "placeholder": true,
+          "placeholderMsg": "GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.",
+          "placeholderTitle": "[ COMING SOON ]",
+          "thumb": "",
+          "title": "I'VE BEEN EVERYWHERE"
+        },
+        {
+          "description": "Maritime & waterfront photography",
+          "link": "",
+          "placeholder": true,
+          "placeholderMsg": "GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.",
+          "placeholderTitle": "[ COMING SOON ]",
+          "thumb": "",
+          "title": "COASTAL VIEWS"
+        },
+        {
+          "description": "Airport & tarmac photography",
+          "link": "",
+          "placeholder": true,
+          "placeholderMsg": "GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.",
+          "placeholderTitle": "[ COMING SOON ]",
+          "thumb": "",
+          "title": "PLANE SPOTTING — DEC 2025"
+        },
+        {
+          "description": "Jun 2025 · Portrait & lifestyle",
+          "link": "",
+          "placeholder": true,
+          "placeholderMsg": "GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.",
+          "placeholderTitle": "[ COMING SOON ]",
+          "thumb": "",
+          "title": "E&K — ENGAGEMENT SESSION"
+        }
+      ],
+      "id": "photo",
+      "kind": "photo",
+      "label": "PHOTO",
+      "subsections": []
     },
     {
-      title: 'HIDDEN VARIABLES EP.6',
-      description: 'The System That Keeps You Playing — MMR, Elo & EOMM',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ UNLISTED ]',
-      placeholderMsg: 'LINK NOT YET ADDED.\nUPDATE VIA EDITOR.'
-    },
-    {
-      title: 'HIDDEN VARIABLES EP.5',
-      description: 'The World Behind Your Back — Frustum Culling, Occlusion & LOD',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ UNLISTED ]',
-      placeholderMsg: 'LINK NOT YET ADDED.\nUPDATE VIA EDITOR.'
-    },
-    {
-      title: 'HIDDEN VARIABLES EP.4',
-      description: 'Why Battle Passes Feel Hard to Ignore — Goal-Gradient, Loss Aversion & Sunk Cost',
-      thumb: 'https://img.youtube.com/vi/C0moU5GKMvo/maxresdefault.jpg',
-      link: 'https://youtu.be/C0moU5GKMvo?si=aJQc3sJySB1CXiTO'
-    },
-    {
-      title: 'HIDDEN VARIABLES EP.3',
-      description: "YouTube's Secret File on You — Clusters, Collaborative Filtering & Prediction",
-      thumb: 'https://img.youtube.com/vi/VM68CZKuAgI/maxresdefault.jpg',
-      link: 'https://youtu.be/VM68CZKuAgI?si=DkQKeXkFl7G80CFn'
-    },
-    {
-      title: 'HIDDEN VARIABLES EP.2',
-      description: 'How Speedrunners Break Games — TAS, Glitches, Routing & RNG',
-      thumb: 'https://img.youtube.com/vi/nEr4Iz_sNq8/maxresdefault.jpg',
-      link: 'https://youtu.be/nEr4Iz_sNq8?si=JAjzQRqd5GYCMCru'
-    },
-    {
-      title: 'HIDDEN VARIABLES EP.1',
-      description: "Latency Isn't Just Ping — End-to-End Latency & Peeker's Advantage",
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ ACCESS RESTRICTED ]',
-      placeholderMsg: 'THIS FILE IS NOT PUBLICLY AVAILABLE.\nCONTACT FOR ACCESS.'
-    }
-  ],
-  ddFiles: [
-    {
-      title: 'DIGGING DEEPER — REEL #1',
-      description: 'Social media content · KNWT Instagram',
-      thumb: '',
-      link: 'https://www.instagram.com/reel/DUoPzLEkYet/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
-    },
-    {
-      title: 'DIGGING DEEPER — REEL #2',
-      description: 'Social media content · KNWT Instagram',
-      thumb: '',
-      link: 'https://www.instagram.com/reel/DU1ZqZGDSEu/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
-    },
-    {
-      title: 'DIGGING DEEPER — REEL #3',
-      description: 'Social media content · KNWT Instagram',
-      thumb: '',
-      link: 'https://www.instagram.com/reel/DVJiV6uCd18/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
-    },
-    {
-      title: 'DIGGING DEEPER — REEL #4',
-      description: 'Social media content · KNWT Instagram',
-      thumb: '',
-      link: 'https://www.instagram.com/reel/DWY4eEahI-n/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
-    },
-    {
-      title: 'DIGGING DEEPER — REEL #5',
-      description: 'Social media content · KNWT Instagram',
-      thumb: '',
-      link: 'https://www.instagram.com/reel/DWgxbmpkdNS/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
-    }
-  ],
-  photoFiles: [
-    {
-      title: 'MOTORSPORT — TRACK & ROAD',
-      description: 'Race cars, road cars, track days',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ COMING SOON ]',
-      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
-    },
-    {
-      title: 'MIAMI — JAN 2025',
-      description: '193 items · Street & travel photography',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ COMING SOON ]',
-      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
-    },
-    {
-      title: 'COASTAL VIEWS',
-      description: 'Maritime & waterfront photography',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ COMING SOON ]',
-      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
-    },
-    {
-      title: 'PLANE SPOTTING — DEC 2025',
-      description: 'Airport & tarmac photography',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ COMING SOON ]',
-      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
-    },
-    {
-      title: 'E&K — ENGAGEMENT SESSION',
-      description: 'Jun 2025 · Portrait & lifestyle',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ COMING SOON ]',
-      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
-    },
-    {
-      title: 'CAR SHOW',
-      description: 'Show floor coverage',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ COMING SOON ]',
-      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
-    },
-    {
-      title: 'COFFEE BEAN — VARIOUS',
-      description: 'Lifestyle & product photography',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ COMING SOON ]',
-      placeholderMsg: 'GALLERY UPLOAD IN PROGRESS.\nCHECK BACK SOON.'
-    }
-  ],
-  broadcastFiles: [
-    {
-      title: 'CATVISION — BEARCAT FOOTBALL',
-      description: 'High Wide angle · NCAA Div II · Main program angle',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ BROADCAST ARCHIVE ]',
-      placeholderMsg: 'BROADCAST FOOTAGE IS ARCHIVED INTERNALLY.\nCONTACT FOR REEL ACCESS.'
-    },
-    {
-      title: 'CATVISION — 2025 SEASON',
-      description: 'Football, basketball, soccer, volleyball, baseball',
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ BROADCAST ARCHIVE ]',
-      placeholderMsg: 'BROADCAST FOOTAGE IS ARCHIVED INTERNALLY.\nCONTACT FOR REEL ACCESS.'
-    },
-    {
-      title: 'NW VS PITT STATE — CMSS',
-      description: "Off-campus · Children's Mercy Soccer Stadium · Graphics op",
-      thumb: '',
-      link: '',
-      placeholder: true,
-      placeholderTitle: '[ BROADCAST ARCHIVE ]',
-      placeholderMsg: 'BROADCAST FOOTAGE IS ARCHIVED INTERNALLY.\nCONTACT FOR REEL ACCESS.'
-    },
-    {
-      title: 'BEARCAT DOWNHILL 200 — PITCH',
-      description: 'Mobile production site survey · Remote/live production concept',
-      thumb: '',
-      link: './BeardownhillPitch.pdf',
-      placeholder: false,
-      tag: 'pitch'
+      "dir": "broadcast",
+      "files": [
+        {
+          "title": "KNWT Quiz Corner",
+          "description": "Live-to-tape production of a popular game show!",
+          "thumb": "https://img.youtube.com/vi/Y9w-pNKvg8k/maxresdefault.jpg",
+          "link": "https://youtu.be/Y9w-pNKvg8k",
+          "placeholder": false,
+          "placeholderTitle": "[ COMING SOON ]",
+          "placeholderMsg": "CONTENT COMING SOON."
+        },
+        {
+          "description": "Mobile production site survey · Remote/live production concept",
+          "link": "./BeardownhillPitch.pdf",
+          "placeholder": false,
+          "tag": "pitch",
+          "thumb": "",
+          "title": "BEARCAT DOWNHILL 200 — PITCH"
+        },
+        {
+          "description": "Technical Director · High Wide angle · NCAA Div II ",
+          "link": "https://youtu.be/2ZUMgu1BYJs",
+          "placeholder": false,
+          "placeholderMsg": "BROADCAST FOOTAGE IS ARCHIVED INTERNALLY.\nCONTACT FOR REEL ACCESS.",
+          "placeholderTitle": "[ BROADCAST ARCHIVE ]",
+          "thumb": "https://img.youtube.com/vi/2ZUMgu1BYJs/maxresdefault.jpg",
+          "title": "CATVISION — BEARCAT FOOTBALL"
+        }
+      ],
+      "id": "broadcast",
+      "kind": "broadcast",
+      "label": "BROADCAST",
+      "subsections": [
+        {
+          "id": "sec1",
+          "title": "LIVE PRODUCTION PRODUCER",
+          "desc": "Live Productions made by myself for KNWT TV.",
+          "files": [
+            {
+              "title": "KNWT Homecoming Parade",
+              "description": "Live Streamed Homecoming Coverage",
+              "thumb": "",
+              "link": "",
+              "placeholder": true,
+              "placeholderTitle": "[ IN PROGRESS ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            },
+            {
+              "title": "KNWT Quiz Corner",
+              "description": "First Live Production",
+              "thumb": "https://img.youtube.com/vi/Y9w-pNKvg8k/maxresdefault.jpg",
+              "link": "https://youtu.be/Y9w-pNKvg8k",
+              "placeholder": false,
+              "placeholderTitle": "[ COMING SOON ]",
+              "placeholderMsg": "CONTENT COMING SOON."
+            }
+          ]
+        }
+      ]
     }
   ]
-};
+}/*DATA_END*/;
 
 function loadData() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? { ...defaultData, ...JSON.parse(saved) } : defaultData;
-  } catch(e) { return defaultData; }
+  try { localStorage.removeItem('gp_site_data'); } catch (e) {}  // old versions cached data here
+  return defaultData;
 }
 
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
 function applyData(d) {
-  document.getElementById('hero-tag').textContent = d.heroTag;
+  const set = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
+  set('hero-tag', d.heroTag);
   document.getElementById('hero-name').setAttribute('data-text', 'GRANT HUGHES');
-  document.getElementById('hero-subtitle').textContent = d.heroSubtitle;
-  document.getElementById('contact-blurb').textContent = d.contactBlurb;
-  document.getElementById('skill-role').textContent = d.skillRole;
-  document.getElementById('skill-affil').textContent = d.skillAffil;
-  document.getElementById('skill-tools').textContent = d.skillTools;
-  document.getElementById('skill-spec').textContent = d.skillSpec;
-  if (document.getElementById('skill-live')) document.getElementById('skill-live').textContent = d.skillLive;
+  set('hero-subtitle', d.heroSubtitle);
+  set('contact-blurb', d.contactBlurb);
+  set('skill-role', d.skillRole);
+  set('skill-affil', d.skillAffil);
+  set('skill-tools', d.skillTools);
+  set('skill-live', d.skillLive);
+  set('skill-spec', d.skillSpec);
 
   const emailEl = document.getElementById('contact-email');
   emailEl.href = 'mailto:' + d.contactEmail;
   emailEl.querySelector('.link-label').textContent = d.contactEmail;
-
   document.getElementById('contact-youtube').href = d.contactYoutube;
   document.getElementById('contact-instagram').href = d.contactInstagram;
   document.getElementById('contact-linkedin').href = d.contactLinkedin;
 
   const resumeLink = document.getElementById('resume-link');
-  if (resumeLink) resumeLink.href = './' + (d.resumeFile || 'GrantHughesResume.pdf');
+  const resume = (d.resumeFile || 'GrantHughesResume.pdf').replace(/^\.\//, '');
+  resumeLink.href = './' + resume;
+  resumeLink.setAttribute('download', resume.split('/').pop());
 
-  buildTVGrid(d.heroImages);
-  buildFileGrid('grid-video', 'video-count', d.videoFiles, 'video');
-  buildFileGrid('grid-hv', null, d.hvFiles, 'video');
-  buildFileGrid('grid-dd', null, d.ddFiles, 'video');
-  buildFileGrid('grid-photo', 'photo-count', d.photoFiles, 'photo');
-  buildFileGrid('grid-broadcast', 'broadcast-count', d.broadcastFiles, 'broadcast');
+  renderBio(d.aboutBio || []);
+  renderProjects(d.tabs || []);
+  buildTVGrid(d.heroImages || []);
 }
 
-/* ===================== FILE GRID ===================== */
-function buildFileGrid(containerId, countId, files, type) {
-  const grid = document.getElementById(containerId);
-  if (!grid) return;
-  if (countId) document.getElementById(countId).textContent = files.length;
+/* ===================== ABOUT BIO ===================== */
+// **text** in a paragraph becomes purple highlighted text
+function renderBio(paras) {
+  const box = document.getElementById('bio-paras');
+  box.innerHTML = '';
+  paras.forEach((text, i) => {
+    const p = document.createElement('p');
+    p.dataset.edit = 'bio:' + i;
+    p.innerHTML = esc(text).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    box.appendChild(p);
+  });
+}
+
+/* ===================== PROJECTS / MEDIA BROWSER ===================== */
+let activeTab = null;
+
+function renderProjects(tabs) {
+  const bar = document.getElementById('terminal-tabs');
+  const wrap = document.getElementById('tab-container');
+  bar.innerHTML = '';
+  wrap.innerHTML = '';
+  if (!tabs.some(t => t.id === activeTab)) activeTab = tabs.length ? tabs[0].id : null;
+
+  tabs.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (t.id === activeTab ? ' active' : '');
+    btn.dataset.tab = t.id;
+    btn.textContent = '[ ' + t.label + ' ]';
+    btn.addEventListener('click', () => switchTab(t.id));
+    bar.appendChild(btn);
+
+    const kind = t.kind || 'video';
+    const subs = t.subsections || [];
+    const main = t.files || [];
+    const total = main.length + subs.reduce((n, s) => n + (s.files || []).length, 0);
+
+    const pane = document.createElement('div');
+    pane.className = 'tab-content' + (t.id === activeTab ? ' active' : '');
+    pane.id = 'tab-' + t.id;
+    pane.innerHTML = `<p class="terminal-prompt" style="margin-bottom:1rem;">> DIRECTORY: /archives/${esc(t.dir || t.id)} — <span>${total}</span> FILES FOUND</p>`;
+
+    const mainGrid = document.createElement('div');
+    mainGrid.className = 'file-grid';
+    buildFileGrid(mainGrid, main, kind, t.id, '-');
+    pane.appendChild(mainGrid);
+
+    subs.forEach(s => {
+      const words = String(s.title || '').trim().split(/\s+/);
+      const last = words.pop() || '';
+      const titleHtml = (words.length ? esc(words.join(' ')) + ' ' : '') + '<span>' + esc(last) + '</span>';
+      const sec = document.createElement('div');
+      sec.className = 'subsection';
+      sec.innerHTML = `
+        <div class="subsection-header">
+          <p class="subsection-title" data-edit="sub:${esc(t.id)}:${esc(s.id)}">${titleHtml}</p>
+          <p class="subsection-desc">${esc(s.desc || '')}</p>
+        </div>`;
+      const g = document.createElement('div');
+      g.className = 'file-grid';
+      buildFileGrid(g, s.files || [], kind, t.id, s.id);
+      sec.appendChild(g);
+      pane.appendChild(sec);
+    });
+
+    wrap.appendChild(pane);
+  });
+}
+
+function buildFileGrid(grid, files, kind, tabId, subId) {
   grid.innerHTML = '';
-  files.forEach(file => {
+  files.forEach((file, i) => {
     const card = document.createElement('div');
     const isPlaceholder = file.placeholder === true;
     const hasLink = file.link && file.link !== '#' && file.link !== '';
     card.className = 'file-card' + (hasLink ? ' clickable' : '');
+    card.dataset.edit = `file:${tabId}:${subId}:${i}`;
 
     if (hasLink) {
-      card.onclick = () => window.open(file.link, '_blank');
+      card.onclick = () => window.open(file.link, '_blank', 'noopener');
     } else if (isPlaceholder) {
       card.style.cursor = 'pointer';
       card.onclick = () => {
@@ -724,39 +890,39 @@ function buildFileGrid(containerId, countId, files, type) {
       };
     }
 
-    const icon = type === 'video'
+    const icon = kind === 'video'
       ? '<polygon points="5,3 19,12 5,21"/>'
       : '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/>';
 
     const thumbHtml = file.thumb
-      ? `<img src="${file.thumb}" alt="${file.title}" loading="lazy">`
-      : `<div class="file-thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="${type === 'video' ? '#5A00AA' : '#444'}" stroke-width="1">${icon}</svg></div>`;
+      ? `<img src="${esc(file.thumb)}" alt="${esc(file.title)}" loading="lazy">`
+      : `<div class="file-thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="${kind === 'video' ? '#5A00AA' : '#444'}" stroke-width="1">${icon}</svg></div>`;
 
     const overlayHtml = isPlaceholder ? `
       <div class="file-overlay">
-        <p class="file-overlay-title">${file.placeholderTitle || '[ RESTRICTED ]'}</p>
-        <p class="file-overlay-msg">${(file.placeholderMsg || 'CONTENT NOT AVAILABLE.').replace(/\n/g, '<br>')}</p>
+        <p class="file-overlay-title">${esc(file.placeholderTitle || '[ RESTRICTED ]')}</p>
+        <p class="file-overlay-msg">${esc(file.placeholderMsg || 'CONTENT NOT AVAILABLE.').replace(/\n/g, '<br>')}</p>
         <span class="file-overlay-close" onclick="event.stopPropagation(); this.parentElement.classList.remove('visible');">[ CLOSE ]</span>
       </div>` : '';
 
-    const tagClass = file.tag || type;
+    const tagText = file.tag || kind;
+    const tagClass = String(tagText).toLowerCase().replace(/[^a-z0-9]+/g, '-');
     card.innerHTML = `
       <div class="file-thumb">${thumbHtml}</div>
-      <span class="file-tag ${tagClass}">${(file.tag || type).toUpperCase()}</span>
+      <span class="file-tag ${tagClass}">${esc(String(tagText).toUpperCase())}</span>
       <div class="file-info">
-        <p class="file-name">${file.title}</p>
-        <p class="file-meta">${file.description}</p>
+        <p class="file-name">${esc(file.title)}</p>
+        <p class="file-meta">${esc(file.description)}</p>
       </div>
       ${overlayHtml}`;
     grid.appendChild(card);
   });
 }
 
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`).classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
+function switchTab(id) {
+  activeTab = id;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + id));
 }
 
 /* ===================== TV GRID ===================== */
@@ -1017,19 +1183,42 @@ document.getElementById('contact-form').addEventListener('submit', async functio
   btn.textContent = 'TRANSMIT →';
 });
 
+/* ===================== EDITOR PREVIEW HOOKS =====================
+   Only active when this page is loaded inside the local editor's iframe.
+   Click anything outlined in green to jump to its field in the editor. */
+const IS_LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
+if (IS_LOCAL && window.parent !== window) {
+  document.body.classList.add('edit-mode');
+  document.addEventListener('click', e => {
+    const el = e.target.closest('[data-edit]');
+    if (!el) return;
+    e.preventDefault();
+    e.stopPropagation();
+    window.parent.postMessage({ type: 'gp-edit', target: el.dataset.edit }, location.origin);
+  }, true);
+  window.addEventListener('message', e => {
+    if (e.origin !== location.origin) return;
+    const m = e.data;
+    if (m && m.type === 'gp-show') {
+      if (m.tab) switchTab(m.tab);
+      if (m.page) navigateTo(m.page);
+    }
+  });
+}
+
 /* ===================== INIT ===================== */
 async function initData() {
   try {
     const r = await fetch('/api/data');
     const data = await r.json();
-    if (!data.error) applyData(data);
+    if (!data.error && data.tabs) applyData(data);
     else applyData(loadData());
   } catch {
     applyData(loadData());
   }
 }
-if (window.location.hostname === 'localhost') initData();
-else { const data = loadData(); applyData(data); }
+if (IS_LOCAL) initData();
+else applyData(loadData());
 </script>
 </body>
 </html>
